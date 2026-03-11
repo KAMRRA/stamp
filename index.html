@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>이벤트 룰렛</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f7f9fc; margin-top: 50px; overflow: hidden; }
+        .roulette-container { position: relative; width: 500px; height: 500px; margin-bottom: 40px; }
+        
+        /* 12시 방향 빨간색 바늘 */
+        .pointer {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0;
+            border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #ff4757;
+            z-index: 10; filter: drop-shadow(0px 4px 2px rgba(0,0,0,0.3));
+        }
+
+        /* 룰렛 회전판 */
+        #roulette {
+            width: 100%; height: 100%; border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            transition: transform 5s cubic-bezier(0.2, 0.9, 0.3, 1); /* 부드럽게 멈추는 효과 */
+        }
+
+        /* 시작 버튼 */
+        .btn-spin {
+            padding: 15px 50px; font-size: 26px; font-weight: bold; color: white; background-color: #2ed573;
+            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+        .btn-spin:active { transform: scale(0.95); }
+        .btn-spin:disabled { background-color: #a4b0be; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* 결과 화면 팝업(모달) 스타일 */
+        #resultModal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 40px 60px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        
+        #resultImage { max-width: 300px; max-height: 300px; margin-bottom: 25px; border-radius: 10px; object-fit: contain; }
+        #resultText { font-size: 36px; font-weight: bold; color: #2f3542; margin-bottom: 30px; line-height: 1.4; }
+        .btn-close { padding: 12px 40px; font-size: 20px; font-weight: bold; background-color: #ff4757; color: white; border: none; border-radius: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="roulette-container">
+        <div class="pointer"></div>
+        <canvas id="roulette" width="500" height="500"></canvas>
+    </div>
+    
+    <button class="btn-spin" id="spinBtn" onclick="spinRoulette()">START!</button>
+
+    <div id="resultModal">
+        <div class="modal-content">
+            <img id="resultImage" src="" alt="상품 이미지" onerror="this.style.display='none'">
+            <div id="resultText">당첨 결과!</div>
+            <button class="btn-close" onclick="closeModal()">다음 참가자 준비</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. 관리자가 저장한 데이터 불러오기
+        const rouletteData = JSON.parse(localStorage.getItem('rouletteConfig')) || [{ name: "설정 필요", weight: 100, image: "" }];
+        const numItems = rouletteData.length;
+        const colors = ['#ff9ff3', '#feca57', '#ff6b6b', '#48dbfb', '#1dd1a1', '#c8d6e5', '#ffc048', '#ffdd59'];
+
+        // 2. 룰렛 그리기 (모두 동일한 비율로)
+        function drawWheel() {
+            const canvas = document.getElementById('roulette');
+            const ctx = canvas.getContext('2d');
+            const arc = (2 * Math.PI) / numItems;
+            const radius = canvas.width / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < numItems; i++) {
+                const angle = i * arc;
+                ctx.beginPath();
+                ctx.fillStyle = colors[i % colors.length];
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, angle, angle + arc, false);
+                ctx.fill(); 
+                ctx.strokeStyle = "#fff";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // 텍스트 그리기
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate(angle + arc / 2);
+                ctx.textAlign = "right"; 
+                ctx.fillStyle = "#2f3542"; 
+                ctx.font = "bold 22px 'Malgun Gothic'";
+                ctx.fillText(rouletteData[i].name, radius - 40, 8);
+                ctx.restore();
+            }
+        }
+        drawWheel();
+
+        // 3. 비밀 추첨 로직 (확률 기반)
+        function getWinningIndex() {
+            const totalWeight = rouletteData.reduce((sum, item) => sum + item.weight, 0);
+            const randomNum = Math.random() * totalWeight;
+            let weightSum = 0;
+            for (let i = 0; i < numItems; i++) {
+                weightSum += rouletteData[i].weight;
+                if (randomNum <= weightSum) return i;
+            }
+            return 0;
+        }
+
+        let currentRotation = 0;
+
+        // 4. 룰렛 회전 및 애니메이션
+        function spinRoulette() {
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true; 
+
+            // 당첨자 뽑기
+            const winningIndex = getWinningIndex();
+            const winningItem = rouletteData[winningIndex]; 
+            console.log("백그라운드 당첨 결과:", winningItem.name); // F12 개발자 도구에서 확인용
+            
+            // 각도 계산 (버그 수정 완료)
+            const sliceAngle = 360 / numItems;
+            const centerAngle = (winningIndex * sliceAngle) + (sliceAngle / 2); // 당첨 칸의 중심 각도
+            
+            // 바늘(12시, 270도) 위치로 오기 위한 타겟 각도
+            let targetAngle = 270 - centerAngle;
+            if (targetAngle < 0) targetAngle += 360;
+
+            // 현재 회전된 상태에서 얼마나 더 돌아야 하는지 계산
+            const currentMod = currentRotation % 360;
+            let diff = targetAngle - currentMod;
+            if (diff <= 0) diff += 360; // 항상 시계방향으로 회전하도록 보정
+
+            // 최종 회전 각도 = 보정 각도 + (360도 * 5바퀴)
+            currentRotation += diff + (360 * 5);
+
+            const canvas = document.getElementById('roulette');
+            canvas.style.transform = `rotate(${currentRotation}deg)`;
+
+            // 애니메이션 종료(5초) 후 팝업창 띄우기
+            setTimeout(() => {
+                showModal(winningItem.name, winningItem.image);
+            }, 5000);
+        }
+
+        // 5. 결과 모달창 띄우기
+        function showModal(name, imageUrl) {
+            const modal = document.getElementById('resultModal');
+            const imgElement = document.getElementById('resultImage');
+            const textElement = document.getElementById('resultText');
+
+            textElement.innerHTML = `<span style="color:#ff4757;">🎉축하합니다!🎉</span><br><br>[ <b>${name}</b> ]`;
+            
+            if(imageUrl && imageUrl.trim() !== "") {
+                imgElement.src = imageUrl;
+                imgElement.style.display = 'block';
+            } else {
+                imgElement.style.display = 'none';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        // 6. 모달창 닫기 (다음 추첨 대기)
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+            document.getElementById('spinBtn').disabled = false;
+            // 회전 각도는 누적된 상태로 그대로 두어 다음 회전 시 오차를 방지합니다.
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>룰렛 관리자 모드</title>
+    <style>
+        body { font-family: 'Malgun Gothic', sans-serif; padding: 20px; max-width: 800px; margin: auto; }
+        h1 { text-align: center; }
+        .item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        input[type="text"].name-input { flex: 1.5; padding: 8px; }
+        input[type="number"] { flex: 0.8; padding: 8px; }
+        input[type="text"].img-input { flex: 2; padding: 8px; }
+        button { padding: 10px; cursor: pointer; }
+        .btn-add { background-color: #4CAF50; color: white; border: none; width: 100%; margin-bottom: 20px; font-weight: bold;}
+        .btn-save { background-color: #2196F3; color: white; border: none; width: 100%; font-size: 18px; font-weight: bold; }
+        .btn-remove { background-color: #f44336; color: white; border: none; }
+        .help-text { font-size: 13px; color: #666; background: #f0f0f0; padding: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>⚙️ 룰렛 확률 및 이미지 설정</h1>
+    <p class="help-text">
+        💡 <b>이미지 주소 넣는 법:</b><br>
+        1. 인터넷에 있는 이미지 우클릭 -> '이미지 주소 복사' 후 붙여넣기<br>
+        2. 또는 깃허브 폴더에 이미지를 같이 올린 후 파일명 입력 (예: <code>drone.png</code>, <code>3dpen.jpg</code>)
+    </p>
+
+    <div id="itemList"></div>
+    
+    <button class="btn-add" onclick="addItem()">+ 새 항목 추가</button>
+    <button class="btn-save" onclick="saveData()">💾 설정 저장하기</button>
+
+    <script>
+        // 기본 데이터 예시 (이미지 링크 포함)
+        const defaultData = [
+            { name: "드론 조종 체험권", weight: 10, image: "https://cdn-icons-png.flaticon.com/512/900/900336.png" },
+            { name: "3D 펜 작품", weight: 20, image: "https://cdn-icons-png.flaticon.com/512/3212/3212515.png" },
+            { name: "특별 간식 세트", weight: 30, image: "https://cdn-icons-png.flaticon.com/512/2553/2553691.png" },
+            { name: "아쉽지만 다음 기회에", weight: 40, image: "https://cdn-icons-png.flaticon.com/512/742/742750.png" }
+        ];
+
+        let rouletteData = JSON.parse(localStorage.getItem('rouletteConfig')) || defaultData;
+
+        function renderItems() {
+            const list = document.getElementById('itemList');
+            list.innerHTML = '';
+            rouletteData.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'item-row';
+                row.innerHTML = `
+                    <input type="text" class="name-input" value="${item.name}" id="name-${index}" placeholder="상품명">
+                    <input type="number" value="${item.weight}" id="weight-${index}" placeholder="확률(가중치)">
+                    <input type="text" class="img-input" value="${item.image || ''}" id="img-${index}" placeholder="이미지 URL 또는 파일명">
+                    <button class="btn-remove" onclick="removeItem(${index})">삭제</button>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function addItem() {
+            rouletteData.push({ name: "새 항목", weight: 10, image: "" });
+            renderItems();
+        }
+
+        function removeItem(index) {
+            rouletteData.splice(index, 1);
+            renderItems();
+        }
+
+        function saveData() {
+            const inputs = document.querySelectorAll('.item-row');
+            const newData = [];
+            inputs.forEach((row, index) => {
+                const name = document.getElementById(`name-${index}`).value;
+                const weight = parseInt(document.getElementById(`weight-${index}`).value) || 0;
+                const image = document.getElementById(`img-${index}`).value;
+                newData.push({ name, weight, image });
+            });
+            localStorage.setItem('rouletteConfig', JSON.stringify(newData));
+            alert("✅ 설정이 저장되었습니다! 이제 index.html을 열어 확인해보세요.");
+        }
+
+        renderItems();
+    </script>
+</body>
+</html>
