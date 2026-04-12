@@ -1,182 +1,890 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>이벤트 룰렛</title>
-    <style>
-        body { font-family: 'Malgun Gothic', sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f7f9fc; margin-top: 50px; overflow: hidden; }
-        .roulette-container { position: relative; width: 500px; height: 500px; margin-bottom: 40px; }
-        
-        /* 12시 방향 빨간색 바늘 */
-        .pointer {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #ff4757;
-            z-index: 10; filter: drop-shadow(0px 4px 2px rgba(0,0,0,0.3));
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>스탬프 랠리</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f1923;
+    --card: #1a2634;
+    --card2: #1f2e40;
+    --accent: #f0c040;
+    --accent2: #e07b30;
+    --green: #3ecf72;
+    --text: #eef2f7;
+    --muted: #7a90a8;
+    --stamp-colors: #f0c040, #e07b30, #3ecf72, #e05580, #7b6cf0, #40c0cf, #cf7b40, #cf40a0;
+    --radius: 16px;
+  }
 
-        /* 룰렛 회전판 */
-        #roulette {
-            width: 100%; height: 100%; border-radius: 50%;
-            box-shadow: 0 0 20px rgba(0,0,0,0.15);
-            transition: transform 5s cubic-bezier(0.2, 0.9, 0.3, 1); /* 부드럽게 멈추는 효과 */
-        }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        /* 시작 버튼 */
-        .btn-spin {
-            padding: 15px 50px; font-size: 26px; font-weight: bold; color: white; background-color: #2ed573;
-            border: none; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-            transition: transform 0.1s;
-        }
-        .btn-spin:active { transform: scale(0.95); }
-        .btn-spin:disabled { background-color: #a4b0be; cursor: not-allowed; box-shadow: none; transform: none; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
 
-        /* 결과 화면 팝업(모달) 스타일 */
-        #resultModal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 999; flex-direction: column; justify-content: center; align-items: center;
-        }
-        .modal-content {
-            background: white; padding: 40px 60px; border-radius: 20px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes popIn { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        
-        #resultImage { max-width: 300px; max-height: 300px; margin-bottom: 25px; border-radius: 10px; object-fit: contain; }
-        #resultText { font-size: 36px; font-weight: bold; color: #2f3542; margin-bottom: 30px; line-height: 1.4; }
-        .btn-close { padding: 12px 40px; font-size: 20px; font-weight: bold; background-color: #ff4757; color: white; border: none; border-radius: 10px; cursor: pointer; }
-    </style>
+  /* ── SCREENS ── */
+  .screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 20px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(24px);
+    transition: opacity 0.35s, transform 0.35s;
+    overflow-y: auto;
+  }
+  .screen.active {
+    opacity: 1; pointer-events: all; transform: translateY(0);
+  }
+  .screen-inner {
+    width: 100%; max-width: 420px;
+  }
+
+  /* ── BACKGROUND DECORATION ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(240,192,64,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(62,207,114,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ── LOGO / TITLE ── */
+  .logo {
+    font-family: 'Jua', sans-serif;
+    font-size: 36px;
+    color: var(--accent);
+    text-align: center;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    text-shadow: 0 0 40px rgba(240,192,64,0.4);
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    letter-spacing: 1px;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  }
+
+  /* ── INPUT ── */
+  .field-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 17px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input:focus {
+    border-color: var(--accent);
+  }
+
+  /* ── BUTTON ── */
+  .btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    margin-top: 16px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #1a1400;
+    box-shadow: 0 4px 20px rgba(240,192,64,0.3);
+  }
+  .btn-primary:hover { box-shadow: 0 6px 28px rgba(240,192,64,0.45); }
+  .btn-ghost {
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    margin-top: 10px;
+  }
+  .btn-green {
+    background: linear-gradient(135deg, var(--green), #2aaa58);
+    color: #0a2018;
+    box-shadow: 0 4px 20px rgba(62,207,114,0.3);
+    margin-top: 24px;
+  }
+  .btn-danger {
+    background: rgba(224,85,128,0.15);
+    color: #e05580;
+    border: 1px solid rgba(224,85,128,0.3);
+    margin-top: 8px;
+  }
+
+  /* ── STAMP GRID ── */
+  .stamp-grid {
+    display: grid;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .stamp-cell {
+    aspect-ratio: 1;
+    border-radius: 14px;
+    border: 2px dashed rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.03);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: border-color 0.3s;
+    overflow: hidden;
+    cursor: default;
+  }
+  .stamp-cell.earned {
+    border-style: solid;
+    border-color: transparent;
+  }
+  .stamp-cell-num {
+    font-family: 'Jua', sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    position: absolute;
+    top: 6px; left: 10px;
+  }
+  .stamp-cell-name {
+    font-size: 10px;
+    color: rgba(255,255,255,0.25);
+    text-align: center;
+    padding: 0 4px;
+    line-height: 1.3;
+  }
+  .stamp-cell.earned .stamp-cell-name { display: none; }
+
+  /* ── STAMP ICON ── */
+  .stamp-icon {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    opacity: 0;
+    transform: scale(0) rotate(-30deg);
+    transition: opacity 0.01s, transform 0.01s;
+    position: relative;
+  }
+  .stamp-cell.earned .stamp-icon {
+    opacity: 1;
+    transform: scale(1) rotate(-8deg);
+    transition: opacity 0.4s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.4);
+  }
+  .stamp-cell.just-stamped .stamp-icon {
+    animation: stampPop 0.5s cubic-bezier(0.175,0.885,0.32,1.4) forwards;
+  }
+  @keyframes stampPop {
+    0%   { transform: scale(2.2) rotate(-30deg); opacity:0; }
+    60%  { transform: scale(0.88) rotate(-6deg);  opacity:1; }
+    80%  { transform: scale(1.1)  rotate(-10deg); opacity:1; }
+    100% { transform: scale(1)    rotate(-8deg);  opacity:1; }
+  }
+  .stamp-icon::after {
+    content: '';
+    position: absolute; inset: -4px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    opacity: 0.35;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    border-radius: 3px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+  .progress-label {
+    font-family: 'Jua', sans-serif;
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* ── COMPLETE SCREEN ── */
+  .complete-badge {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,192,64,0.2), rgba(62,207,114,0.1));
+    border: 3px solid var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 52px;
+    animation: glow 2s ease-in-out infinite alternate;
+    box-shadow: 0 0 40px rgba(240,192,64,0.3);
+  }
+  @keyframes glow {
+    from { box-shadow: 0 0 20px rgba(240,192,64,0.2); }
+    to   { box-shadow: 0 0 60px rgba(240,192,64,0.5); }
+  }
+  .complete-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 30px;
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .complete-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* ── BOOTH STAMP SCREEN ── */
+  .booth-badge {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 12px;
+    border: 2px solid rgba(255,255,255,0.15);
+  }
+  .booth-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .booth-sub {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  /* ── ERROR ── */
+  .error-msg {
+    color: #e05580;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  /* ── ADMIN BUTTON ── */
+  .admin-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 13px 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: var(--muted);
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+  }
+  .admin-btn:hover {
+    background: rgba(240,192,64,0.08);
+    border-color: rgba(240,192,64,0.3);
+    color: var(--accent);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px;
+    z-index: 500;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open {
+    opacity: 1; pointer-events: all;
+  }
+  .modal-box {
+    background: var(--card2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    width: 100%; max-width: 340px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    transform: scale(0.95);
+    transition: transform 0.25s;
+  }
+  .modal-overlay.open .modal-box { transform: scale(1); }
+  .modal-title {
+    font-family: 'Jua', sans-serif;
+    font-size: 18px;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .modal-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .admin-booth-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .admin-booth-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+  .admin-booth-item input[type="text"] {
+    flex: 1;
+    font-size: 14px;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+  }
+  .admin-booth-item .pw-field {
+    width: 90px;
+    font-size: 14px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.05);
+  }
+  .admin-booth-item .emoji-btn {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .add-booth-btn {
+    background: rgba(240,192,64,0.1);
+    border: 1.5px dashed rgba(240,192,64,0.4);
+    border-radius: 10px;
+    color: var(--accent);
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    padding: 12px;
+    cursor: pointer;
+    width: 100%;
+    transition: background 0.2s;
+  }
+  .add-booth-btn:hover { background: rgba(240,192,64,0.18); }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin: 20px 0;
+  }
+
+  /* ── NAME BADGE ── */
+  .name-badge {
+    display: inline-block;
+    background: rgba(240,192,64,0.12);
+    border: 1px solid rgba(240,192,64,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+
+  /* ── QR HINT ── */
+  .qr-hint {
+    background: rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-top: 16px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .qr-hint strong { color: var(--text); }
+
+  /* ── EMOJI PICKER ── */
+  .emoji-picker {
+    position: fixed;
+    background: var(--card2);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .emoji-picker span {
+    font-size: 22px;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 4px;
+    text-align: center;
+    transition: background 0.15s;
+  }
+  .emoji-picker span:hover { background: rgba(255,255,255,0.1); }
+
+  .toast {
+    position: fixed;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--green);
+    color: #0a2018;
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    padding: 12px 24px;
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+    z-index: 1000;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
 </head>
 <body>
 
-    <div class="roulette-container">
-        <div class="pointer"></div>
-        <canvas id="roulette" width="500" height="500"></canvas>
+<!-- ══ SCREEN: ADMIN SETUP ══ -->
+<div class="screen" id="s-admin">
+  <div class="screen-inner">
+    <div class="logo">⚙️ 관리자 설정</div>
+    <div class="subtitle">부스 목록과 비밀번호를 설정하세요</div>
+    <div class="card">
+      <div class="field-label">부스 목록</div>
+      <div class="admin-booth-list" id="adminBoothList"></div>
+      <button class="add-booth-btn" onclick="addBooth()">＋ 부스 추가</button>
+      <hr class="section-divider">
+      <div class="field-label" style="margin-bottom:8px">이벤트 이름 (선택)</div>
+      <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:16px">
+      <div class="field-label" style="margin-bottom:8px">관리자 비밀번호 변경 (선택)</div>
+      <input type="password" id="newAdminPw" placeholder="새 비밀번호 입력 (비우면 유지)" style="margin-bottom:0">
+      <button class="btn btn-primary" onclick="saveAdmin()">저장하고 시작하기</button>
     </div>
-    
-    <button class="btn-spin" id="spinBtn" onclick="spinRoulette()">START!</button>
+  </div>
+</div>
 
-    <div id="resultModal">
-        <div class="modal-content">
-            <img id="resultImage" src="" alt="상품 이미지" onerror="this.style.display='none'">
-            <div id="resultText">당첨 결과!</div>
-            <button class="btn-close" onclick="closeModal()">다음 참가자 준비</button>
-        </div>
+<!-- ══ SCREEN: PARTICIPANT START ══ -->
+<div class="screen active" id="s-start">
+  <div class="screen-inner">
+    <div class="logo" id="startLogo">🎪 스탬프 랠리</div>
+    <div class="subtitle" id="startSub">모든 부스를 돌아다니며 스탬프를 모아보세요!</div>
+    <div class="card">
+      <div class="field-label">이름을 입력해주세요</div>
+      <input type="text" id="participantName" placeholder="홍길동" maxlength="20"
+        onkeydown="if(event.key==='Enter') startRally()">
+      <button class="btn btn-primary" onclick="startRally()">스탬프 랠리 시작! 🚀</button>
     </div>
+    <button class="admin-btn" onclick="openAdminModal()">⚙️ 관리자 설정</button>
+  </div>
+</div>
 
-    <script>
-        // 1. 관리자가 저장한 데이터 불러오기
-        const rouletteData = JSON.parse(localStorage.getItem('rouletteConfig')) || [{ name: "설정 필요", weight: 100, image: "" }];
-        const numItems = rouletteData.length;
-        const colors = ['#ff9ff3', '#feca57', '#ff6b6b', '#48dbfb', '#1dd1a1', '#c8d6e5', '#ffc048', '#ffdd59'];
+<!-- ══ MODAL: ADMIN PASSWORD ══ -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-box">
+    <div class="modal-title">⚙️ 관리자 로그인</div>
+    <div class="modal-sub">관리자 비밀번호를 입력하세요.<br>기본 비밀번호: <strong style="color:var(--text)">admin</strong></div>
+    <div class="field-label">비밀번호</div>
+    <input type="password" id="adminPwInput" placeholder="••••" maxlength="30"
+      onkeydown="if(event.key==='Enter') checkAdminPw()">
+    <div class="error-msg" id="adminPwError"></div>
+    <button class="btn btn-primary" onclick="checkAdminPw()" style="margin-top:12px">입장</button>
+    <button class="btn btn-ghost" onclick="closeAdminModal()">취소</button>
+  </div>
+</div>
 
-        // 2. 룰렛 그리기 (모두 동일한 비율로)
-        function drawWheel() {
-            const canvas = document.getElementById('roulette');
-            const ctx = canvas.getContext('2d');
-            const arc = (2 * Math.PI) / numItems;
-            const radius = canvas.width / 2;
+<!-- ══ SCREEN: STAMP CARD ══ -->
+<div class="screen" id="s-card">
+  <div class="screen-inner">
+    <div style="text-align:center; margin-bottom:16px">
+      <div class="name-badge" id="cardNameBadge">홍길동</div>
+      <div class="logo" style="font-size:26px; margin-bottom:4px">스탬프 카드</div>
+    </div>
+    <div class="card">
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-bar" id="stampProgress"></div></div>
+        <div class="progress-label" id="stampCount">0/0</div>
+      </div>
+      <div class="stamp-grid" id="stampGrid" style="grid-template-columns: repeat(3,1fr)"></div>
+      <div class="qr-hint">
+        📱 <strong>부스에서 QR코드를 스캔</strong>하거나 운영진에게 스탬프를 받으세요
+      </div>
+    </div>
+    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:16px">← 처음으로</button>
+  </div>
+</div>
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+<!-- ══ SCREEN: BOOTH STAMP ══ -->
+<div class="screen" id="s-booth">
+  <div class="screen-inner">
+    <div class="card">
+      <div class="booth-badge" id="boothBadge">🎯</div>
+      <div class="booth-title" id="boothTitle">부스 이름</div>
+      <div class="booth-sub" id="boothSub">운영진이 비밀번호를 입력해 스탬프를 찍어주세요</div>
+      <div class="field-label">비밀번호</div>
+      <input type="password" id="boothPwInput" placeholder="••••" maxlength="20"
+        onkeydown="if(event.key==='Enter') tryStamp()">
+      <div class="error-msg" id="boothError"></div>
+      <button class="btn btn-primary" onclick="tryStamp()">스탬프 찍기 ✦</button>
+      <button class="btn btn-ghost" onclick="backToCard()">← 카드로 돌아가기</button>
+    </div>
+  </div>
+</div>
 
-            for (let i = 0; i < numItems; i++) {
-                const angle = i * arc;
-                ctx.beginPath();
-                ctx.fillStyle = colors[i % colors.length];
-                ctx.moveTo(radius, radius);
-                ctx.arc(radius, radius, radius, angle, angle + arc, false);
-                ctx.fill(); 
-                ctx.strokeStyle = "#fff";
-                ctx.lineWidth = 2;
-                ctx.stroke();
+<!-- ══ SCREEN: COMPLETE ══ -->
+<div class="screen" id="s-complete">
+  <div class="screen-inner">
+    <div class="card" style="text-align:center; padding:40px 24px">
+      <div class="complete-badge">🏆</div>
+      <div class="complete-title">축하해요!</div>
+      <div class="complete-sub" id="completeSub">모든 스탬프를 모았어요 🎉<br>운영진에게 완료 화면을 보여주세요.</div>
+      <div id="completeStamps" style="margin: 24px 0; display:flex; flex-wrap:wrap; justify-content:center; gap:10px"></div>
+      <button class="btn btn-green" onclick="goStart()">처음으로 돌아가기</button>
+    </div>
+  </div>
+</div>
 
-                // 텍스트 그리기
-                ctx.save();
-                ctx.translate(radius, radius);
-                ctx.rotate(angle + arc / 2);
-                ctx.textAlign = "right"; 
-                ctx.fillStyle = "#2f3542"; 
-                ctx.font = "bold 22px 'Malgun Gothic'";
-                ctx.fillText(rouletteData[i].name, radius - 40, 8);
-                ctx.restore();
-            }
-        }
-        drawWheel();
+<!-- Emoji Picker -->
+<div class="emoji-picker" id="emojiPicker" style="display:none"></div>
+<div class="toast" id="toast"></div>
 
-        // 3. 비밀 추첨 로직 (확률 기반)
-        function getWinningIndex() {
-            const totalWeight = rouletteData.reduce((sum, item) => sum + item.weight, 0);
-            const randomNum = Math.random() * totalWeight;
-            let weightSum = 0;
-            for (let i = 0; i < numItems; i++) {
-                weightSum += rouletteData[i].weight;
-                if (randomNum <= weightSum) return i;
-            }
-            return 0;
-        }
+<script>
+const EMOJIS = ['🎯','🎪','🎨','🎭','🎬','🎤','🎸','🎺','🌟','🔥','⚡','🌈','🍕','🍦','🎂','🏆','🚀','💎','🌸','🦋','🐉','🦁','🐬','🦄','🎁','🎀','🎮','🕹️','⚽','🏀'];
+const COLOR_LIST = ['#f0c040','#e07b30','#3ecf72','#e05580','#7b6cf0','#40c0cf','#cf7b40','#cf40a0','#40cfb0','#c0e040'];
 
-        let currentRotation = 0;
+// ── STATE ──
+let booths = [
+  { name: '부스 1', pw: '1234', emoji: '🎯' },
+  { name: '부스 2', pw: '5678', emoji: '🎨' },
+  { name: '부스 3', pw: '0000', emoji: '🌟' },
+];
+let eventName = '스탬프 랠리';
+let participant = '';
+let stamps = []; // array of booth indices earned
+let currentBooth = null; // index
+let emojiTarget = null; // index in booths
 
-        // 4. 룰렛 회전 및 애니메이션
-        function spinRoulette() {
-            const btn = document.getElementById('spinBtn');
-            btn.disabled = true; 
+// ── SCREEN SWITCH ──
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  setTimeout(() => {
+    document.getElementById(id).classList.add('active');
+  }, 10);
+}
 
-            // 당첨자 뽑기
-            const winningIndex = getWinningIndex();
-            const winningItem = rouletteData[winningIndex]; 
-            console.log("백그라운드 당첨 결과:", winningItem.name); // F12 개발자 도구에서 확인용
-            
-            // 각도 계산 (버그 수정 완료)
-            const sliceAngle = 360 / numItems;
-            const centerAngle = (winningIndex * sliceAngle) + (sliceAngle / 2); // 당첨 칸의 중심 각도
-            
-            // 바늘(12시, 270도) 위치로 오기 위한 타겟 각도
-            let targetAngle = 270 - centerAngle;
-            if (targetAngle < 0) targetAngle += 360;
+// ── ADMIN ──
+function renderAdmin() {
+  const list = document.getElementById('adminBoothList');
+  list.innerHTML = '';
+  booths.forEach((b, i) => {
+    const row = document.createElement('div');
+    row.className = 'admin-booth-item';
+    row.innerHTML = `
+      <button class="emoji-btn" onclick="openEmojiPicker(event, ${i})">${b.emoji}</button>
+      <input type="text" value="${b.name}" placeholder="부스 이름" oninput="booths[${i}].name=this.value">
+      <input type="text" class="pw-field" value="${b.pw}" placeholder="비번" oninput="booths[${i}].pw=this.value">
+      <button onclick="removeBooth(${i})" style="background:rgba(224,85,128,0.15);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;color:#e05580;font-size:16px;flex-shrink:0">✕</button>
+    `;
+    list.appendChild(row);
+  });
+}
 
-            // 현재 회전된 상태에서 얼마나 더 돌아야 하는지 계산
-            const currentMod = currentRotation % 360;
-            let diff = targetAngle - currentMod;
-            if (diff <= 0) diff += 360; // 항상 시계방향으로 회전하도록 보정
+function addBooth() {
+  booths.push({ name: `부스 ${booths.length + 1}`, pw: '1234', emoji: EMOJIS[booths.length % EMOJIS.length] });
+  renderAdmin();
+}
 
-            // 최종 회전 각도 = 보정 각도 + (360도 * 5바퀴)
-            currentRotation += diff + (360 * 5);
+function removeBooth(i) {
+  if (booths.length <= 1) return showToast('부스는 최소 1개 필요해요');
+  booths.splice(i, 1);
+  renderAdmin();
+}
 
-            const canvas = document.getElementById('roulette');
-            canvas.style.transform = `rotate(${currentRotation}deg)`;
+function saveAdmin() {
+  if (booths.some(b => !b.name.trim())) return showToast('부스 이름을 입력해주세요');
+  if (booths.some(b => !b.pw.trim())) return showToast('모든 부스의 비밀번호를 설정해주세요');
+  eventName = document.getElementById('eventName').value.trim() || '스탬프 랠리';
+  document.getElementById('startLogo').textContent = '🎪 ' + eventName;
+  const newPw = document.getElementById('newAdminPw').value.trim();
+  if (newPw) { adminPw = newPw; }
+  document.getElementById('newAdminPw').value = '';
+  show('s-start');
+  showToast('설정 저장 완료!');
+}
 
-            // 애니메이션 종료(5초) 후 팝업창 띄우기
-            setTimeout(() => {
-                showModal(winningItem.name, winningItem.image);
-            }, 5000);
-        }
+let adminPw = 'admin';
 
-        // 5. 결과 모달창 띄우기
-        function showModal(name, imageUrl) {
-            const modal = document.getElementById('resultModal');
-            const imgElement = document.getElementById('resultImage');
-            const textElement = document.getElementById('resultText');
+function openAdminModal() {
+  document.getElementById('adminPwInput').value = '';
+  document.getElementById('adminPwError').textContent = '';
+  document.getElementById('adminModal').classList.add('open');
+  setTimeout(() => document.getElementById('adminPwInput').focus(), 300);
+}
 
-            textElement.innerHTML = `<span style="color:#ff4757;">🎉축하합니다!🎉</span><br><br>[ <b>${name}</b> ]`;
-            
-            if(imageUrl && imageUrl.trim() !== "") {
-                imgElement.src = imageUrl;
-                imgElement.style.display = 'block';
-            } else {
-                imgElement.style.display = 'none';
-            }
+function closeAdminModal() {
+  document.getElementById('adminModal').classList.remove('open');
+}
 
-            modal.style.display = 'flex';
-        }
+function checkAdminPw() {
+  const input = document.getElementById('adminPwInput').value;
+  if (input === adminPw) {
+    closeAdminModal();
+    renderAdmin();
+    document.getElementById('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
+    show('s-admin');
+  } else {
+    document.getElementById('adminPwError').textContent = '비밀번호가 틀렸어요.';
+    document.getElementById('adminPwInput').value = '';
+    document.getElementById('adminPwInput').focus();
+  }
+}
 
-        // 6. 모달창 닫기 (다음 추첨 대기)
-        function closeModal() {
-            document.getElementById('resultModal').style.display = 'none';
-            document.getElementById('spinBtn').disabled = false;
-            // 회전 각도는 누적된 상태로 그대로 두어 다음 회전 시 오차를 방지합니다.
-        }
-    </script>
+function goAdmin() {
+  renderAdmin();
+  document.getElementById('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
+  show('s-admin');
+}
+
+// ── EMOJI PICKER ──
+function openEmojiPicker(e, idx) {
+  emojiTarget = idx;
+  const picker = document.getElementById('emojiPicker');
+  picker.innerHTML = EMOJIS.map(em => `<span onclick="pickEmoji('${em}')">${em}</span>`).join('');
+  picker.style.display = 'grid';
+  const rect = e.target.getBoundingClientRect();
+  picker.style.top = (rect.bottom + 6) + 'px';
+  picker.style.left = Math.min(rect.left, window.innerWidth - 220) + 'px';
+  e.stopPropagation();
+}
+function pickEmoji(em) {
+  if (emojiTarget !== null) {
+    booths[emojiTarget].emoji = em;
+    renderAdmin();
+  }
+  document.getElementById('emojiPicker').style.display = 'none';
+  emojiTarget = null;
+}
+document.addEventListener('click', () => {
+  document.getElementById('emojiPicker').style.display = 'none';
+});
+
+// ── RALLY START ──
+function startRally() {
+  const name = document.getElementById('participantName').value.trim();
+  if (!name) {
+    document.getElementById('participantName').focus();
+    return showToast('이름을 입력해주세요 😊');
+  }
+  participant = name;
+  stamps = [];
+  renderCard();
+  show('s-card');
+}
+
+function goStart() {
+  document.getElementById('participantName').value = '';
+  show('s-start');
+}
+
+// ── STAMP CARD ──
+function renderCard() {
+  document.getElementById('cardNameBadge').textContent = participant + ' 님';
+  const grid = document.getElementById('stampGrid');
+  const cols = booths.length <= 4 ? 2 : booths.length <= 9 ? 3 : 4;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  grid.innerHTML = '';
+
+  booths.forEach((b, i) => {
+    const earned = stamps.includes(i);
+    const color = COLOR_LIST[i % COLOR_LIST.length];
+    const cell = document.createElement('div');
+    cell.className = 'stamp-cell' + (earned ? ' earned' : '');
+    cell.id = `cell-${i}`;
+    cell.style.borderColor = earned ? color + '50' : '';
+    cell.innerHTML = `
+      <div class="stamp-cell-num">${i+1}</div>
+      <div class="stamp-icon" style="background:${color}22; color:${color}; border-color:${color}">${b.emoji}</div>
+      ${!earned ? `<div class="stamp-cell-name">${b.name}</div>` : ''}
+    `;
+    cell.addEventListener('click', () => openBooth(i));
+    grid.appendChild(cell);
+  });
+
+  const total = booths.length, done = stamps.length;
+  document.getElementById('stampProgress').style.width = (done/total*100) + '%';
+  document.getElementById('stampCount').textContent = `${done}/${total}`;
+}
+
+// ── BOOTH STAMP ──
+function openBooth(i) {
+  if (stamps.includes(i)) return showToast('이미 스탬프를 받았어요! ✓');
+  currentBooth = i;
+  const b = booths[i];
+  const color = COLOR_LIST[i % COLOR_LIST.length];
+  const badge = document.getElementById('boothBadge');
+  badge.textContent = b.emoji;
+  badge.style.background = color + '22';
+  badge.style.borderColor = color + '60';
+  document.getElementById('boothTitle').textContent = b.name;
+  document.getElementById('boothTitle').style.color = color;
+  document.getElementById('boothPwInput').value = '';
+  document.getElementById('boothError').textContent = '';
+  show('s-booth');
+  setTimeout(() => document.getElementById('boothPwInput').focus(), 400);
+}
+
+function tryStamp() {
+  const input = document.getElementById('boothPwInput').value;
+  const b = booths[currentBooth];
+  if (input === b.pw) {
+    stamps.push(currentBooth);
+    renderCard();
+    // animate the cell
+    const cell = document.getElementById(`cell-${currentBooth}`);
+    if (cell) {
+      setTimeout(() => cell.classList.add('just-stamped'), 100);
+      setTimeout(() => cell.classList.remove('just-stamped'), 700);
+    }
+    show('s-card');
+    showToast(`${b.emoji} ${b.name} 스탬프 획득!`);
+
+    if (stamps.length === booths.length) {
+      setTimeout(() => showComplete(), 900);
+    }
+  } else {
+    document.getElementById('boothError').textContent = '비밀번호가 틀렸어요. 다시 확인해주세요.';
+    document.getElementById('boothPwInput').value = '';
+    document.getElementById('boothPwInput').focus();
+    const card = document.querySelector('#s-booth .card');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = 'shake 0.4s';
+  }
+}
+
+function backToCard() {
+  currentBooth = null;
+  show('s-card');
+}
+
+// ── COMPLETE ──
+function showComplete() {
+  document.getElementById('completeSub').innerHTML =
+    `<strong style="color:var(--accent)">${participant}</strong> 님, 모든 스탬프를 모았어요! 🎉<br>운영진에게 이 화면을 보여주세요.`;
+  const wrap = document.getElementById('completeStamps');
+  wrap.innerHTML = booths.map((b, i) => {
+    const c = COLOR_LIST[i % COLOR_LIST.length];
+    return `<div style="width:52px;height:52px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:24px">${b.emoji}</div>`;
+  }).join('');
+  show('s-complete');
+}
+
+// ── UTILS ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// Shake animation
+const style = document.createElement('style');
+style.textContent = `@keyframes shake {
+  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
+}`;
+document.head.appendChild(style);
+
+// ── URL PARAM: ?booth=N (for QR codes) ──
+const urlParams = new URLSearchParams(location.search);
+const boothParam = urlParams.get('booth');
+if (boothParam !== null) {
+  const bIdx = parseInt(boothParam) - 1;
+  if (!isNaN(bIdx) && bIdx >= 0 && bIdx < booths.length) {
+    // go directly to stamp screen for that booth
+    show('s-start');
+    // store pending booth
+    window._pendingBooth = bIdx;
+  }
+}
+
+// Modify startRally to handle pending booth
+const _origStart = startRally;
+function startRally() {
+  const name = document.getElementById('participantName').value.trim();
+  if (!name) { document.getElementById('participantName').focus(); return showToast('이름을 입력해주세요 😊'); }
+  participant = name;
+  stamps = [];
+  renderCard();
+  if (window._pendingBooth !== undefined) {
+    const idx = window._pendingBooth;
+    delete window._pendingBooth;
+    show('s-card');
+    setTimeout(() => openBooth(idx), 400);
+  } else {
+    show('s-card');
+  }
+}
+
+// init
+renderAdmin();
+</script>
 </body>
 </html>
