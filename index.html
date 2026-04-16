@@ -41,6 +41,7 @@ input:focus{border-color:var(--accent)}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;box-shadow:0 4px 20px rgba(240,192,64,.3)}
 .btn-ghost{background:rgba(255,255,255,.06);color:var(--muted)}
+.btn-disabled{background:rgba(255,255,255,.04);color:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.08);cursor:not-allowed;opacity:.6}
 .btn-green{background:linear-gradient(135deg,var(--green),#2aaa58);color:#0a2018;box-shadow:0 4px 20px rgba(62,207,114,.3);margin-top:20px}
 .btn-danger{background:rgba(224,85,128,.1);color:var(--red);border:1px solid rgba(224,85,128,.25)}
 .btn-download{background:rgba(62,207,114,.1);color:var(--green);border:1px solid rgba(62,207,114,.25);font-size:13px;padding:10px;margin-top:8px}
@@ -126,6 +127,31 @@ input:focus{border-color:var(--accent)}
 .modal-title{font-family:'Jua',sans-serif;font-size:18px;color:var(--accent);margin-bottom:5px}
 .modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5}
 
+/* coupon */
+.coupon-wrap{display:flex;flex-direction:column;gap:14px;margin:16px 0}
+.coupon{border-radius:16px;padding:0;overflow:hidden;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.coupon-inner{background:linear-gradient(135deg,#1a2634,#1f3548);border:2px solid rgba(240,192,64,.3);border-radius:16px;padding:24px 20px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden}
+.coupon-inner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(240,192,64,.06)}
+.coupon-left{flex-shrink:0;text-align:center}
+.coupon-emoji{font-size:40px;display:block;margin-bottom:4px}
+.coupon-num{font-family:'Jua',sans-serif;font-size:11px;color:var(--accent);letter-spacing:2px}
+.coupon-mid{flex:1}
+.coupon-title{font-family:'Jua',sans-serif;font-size:20px;color:var(--accent);margin-bottom:4px}
+.coupon-sub{font-size:12px;color:var(--muted);line-height:1.5}
+.coupon-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;font-family:'Jua',sans-serif;font-size:13px;padding:5px 14px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.coupon-deco{position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:16px;height:32px;background:var(--bg);border-radius:0 16px 16px 0;border-right:2px solid rgba(240,192,64,.3)}
+.coupon-deco-r{position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:16px;height:32px;background:var(--bg);border-radius:16px 0 0 16px;border-left:2px solid rgba(240,192,64,.3)}
+.stamp-summary{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}
+.stamp-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px}
+.result-stats{background:var(--bg);border-radius:10px;padding:14px 16px;margin:12px 0;display:flex;justify-content:space-around}
+.stat-item{text-align:center}
+.stat-num{font-family:'Jua',sans-serif;font-size:24px;color:var(--accent)}
+.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* already screen code input */
+.unlock-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:16px;border:1px solid rgba(255,255,255,.08)}
+.unlock-title{font-size:12px;color:var(--muted);margin-bottom:8px;text-align:center}
+
 /* misc */
 .emoji-picker{position:fixed;background:var(--card2);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .emoji-picker span{font-size:22px;cursor:pointer;border-radius:6px;padding:4px;text-align:center;transition:background .15s}
@@ -172,7 +198,19 @@ input:focus{border-color:var(--accent)}
         <div class="field-label" style="margin-bottom:8px">이벤트 이름</div>
         <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:12px">
         <div class="field-label" style="margin-bottom:8px">관리자 비밀번호 변경 (선택)</div>
-        <input type="password" id="newAdminPw" placeholder="새 비밀번호 (비우면 유지)">
+        <input type="password" id="newAdminPw" placeholder="새 비밀번호 (비우면 유지)" style="margin-bottom:14px">
+        <hr class="section-divider" style="margin:8px 0 14px">
+        <div class="field-label" style="margin-bottom:6px">🎟 뽑기 기회 설정</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">뽑기 1회: 설정 개수 이상 참여 · 뽑기 2회: 전체 부스 완료</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+          <span style="font-size:13px;color:var(--muted);white-space:nowrap">뽑기 1회 기준</span>
+          <input type="text" id="drawMinInput" placeholder="예: 4" maxlength="3"
+            style="width:70px;text-align:center;font-family:'Jua',sans-serif;font-size:16px;flex-shrink:0">
+          <span style="font-size:13px;color:var(--muted)">개 이상</span>
+        </div>
+        <div class="field-label" style="margin-bottom:6px">해제 코드 (이미 참여 화면 해제용)</div>
+        <input type="text" id="drawCodeInput" placeholder="예: OPEN2025" maxlength="20"
+          style="font-family:'Jua',sans-serif;letter-spacing:2px;text-transform:uppercase">
         <button class="btn btn-primary" onclick="saveAdmin()">☁️ 저장 · 모든 기기에 반영</button>
       </div>
 
@@ -245,6 +283,14 @@ input:focus{border-color:var(--accent)}
       <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;border:1px solid rgba(255,255,255,.06)">
         ⚠️ 본인이 참여한 것이 맞다면 운영진에게 문의해 주세요.
       </div>
+      <div class="unlock-box">
+        <div class="unlock-title">🔓 운영진에게 해제 코드를 받아 입력하세요</div>
+        <input type="text" id="unlockCodeInput" placeholder="해제 코드 입력" maxlength="20"
+          style="text-align:center;letter-spacing:4px;font-family:'Jua',sans-serif"
+          onkeydown="if(event.key==='Enter') tryUnlockCode()">
+        <div class="error-msg" id="unlockError"></div>
+        <button class="btn btn-primary" style="font-size:15px;padding:12px;margin-top:8px" onclick="tryUnlockCode()">참여 기록 해제</button>
+      </div>
     </div>
     <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 돌아가기</button>
   </div>
@@ -290,7 +336,9 @@ input:focus{border-color:var(--accent)}
       <div class="stamp-grid" id="stampGrid"></div>
       <div class="qr-hint">📱 <strong>각 부스에서 운영진</strong>에게 스탬프를 받으세요<br><span style="color:var(--accent)">★ = 필수 부스</span></div>
     </div>
-    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:12px">← 처음으로</button>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitStamps()" style="margin-top:12px">📮 스탬프 제출하기</button>
+    <div id="submitHint" style="text-align:center;font-size:12px;color:var(--muted);margin-top:6px"></div>
+    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:8px">← 처음으로</button>
   </div>
 </div>
 
@@ -314,16 +362,36 @@ input:focus{border-color:var(--accent)}
   </div>
 </div>
 
-<!-- SCREEN: COMPLETE -->
+<!-- SCREEN: COMPLETE (쿠폰) -->
 <div class="screen" id="s-complete">
   <div class="screen-inner">
-    <div class="card" style="text-align:center;padding:32px 18px">
-      <div class="complete-badge">🏆</div>
-      <div class="complete-title">축하해요!</div>
-      <div class="complete-sub" id="completeSub">모든 스탬프를 모았어요 🎉</div>
-      <div id="completeStamps" style="margin:18px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px"></div>
-      <button class="btn btn-green" onclick="goStart()">처음으로 돌아가기</button>
+    <div style="text-align:center;margin-bottom:16px">
+      <div class="complete-badge">🎉</div>
+      <div class="complete-title">참여 완료!</div>
+      <div class="complete-sub" id="completeSub"></div>
     </div>
+    <div class="card">
+      <div class="result-stats">
+        <div class="stat-item">
+          <div class="stat-num" id="resultStampCount">0</div>
+          <div class="stat-label">참여 부스</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="resultTotal">0</div>
+          <div class="stat-label">전체 부스</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" id="resultCoupons" style="color:var(--green)">0</div>
+          <div class="stat-label">뽑기 기회</div>
+        </div>
+      </div>
+      <div class="stamp-summary" id="resultStamps"></div>
+      <hr style="border:none;border-top:1px solid rgba(255,255,255,.07);margin:8px 0 14px">
+      <div id="couponWrap" class="coupon-wrap"></div>
+      <div id="noCouponMsg" style="display:none;text-align:center;padding:16px;font-size:13px;color:var(--muted);line-height:1.6"></div>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6">운영진에게 이 화면을 보여주세요 📱</div>
+    <button class="btn btn-ghost" style="margin-top:10px" onclick="goStart()">처음으로 돌아가기</button>
   </div>
 </div>
 
@@ -370,6 +438,8 @@ let db = null;
 let booths = [{ name: '부스 1', pw: '1234', emoji: '🎯', required: false }];
 let eventName = '스탬프 랠리';
 let adminPw = 'admin';
+let drawMin = 4;   // 뽑기 1회 기준 최소 참여 부스 수
+let drawCode = ''; // 이미 참여 화면 해제 코드
 let participant = { name: '', school: '', grade: '' };
 let stamps = [];
 let currentBooth = null;
@@ -432,7 +502,10 @@ function applyConfig(d) {
   if (d.booths?.length) booths = d.booths.map(b => ({ required: false, ...b }));
   if (d.eventName) eventName = d.eventName;
   if (d.adminPw) adminPw = d.adminPw;
+  if (d.drawMin !== undefined) drawMin = d.drawMin;
+  if (d.drawCode) drawCode = d.drawCode;
   $('startLogo').textContent = '🎪 ' + eventName;
+  updateDrawSettingsUI();
 }
 
 function listenConfig() {
@@ -632,9 +705,13 @@ window.saveAdmin = async () => {
   const np = $('newAdminPw').value.trim();
   if (np) adminPw = np;
   $('newAdminPw').value = '';
+  const dm = parseInt($('drawMinInput')?.value);
+  if (!isNaN(dm) && dm > 0) drawMin = dm;
+  const dc = $('drawCodeInput')?.value.trim().toUpperCase();
+  if (dc) drawCode = dc;
 
   setLoading('저장 중...');
-  await set(ref(db, 'config'), { booths, eventName, adminPw });
+  await set(ref(db, 'config'), { booths, eventName, adminPw, drawMin, drawCode });
   setLoading('', false);
   showToast('☁️ 모든 기기에 즉시 반영됐어요!');
 };
@@ -651,6 +728,7 @@ window.checkAdminPw = () => {
   if (v === adminPw) {
     closeAdminModal(); renderAdmin();
     $('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
+    updateDrawSettingsUI();
     show('s-admin');
   } else {
     $('adminPwError').textContent = '비밀번호가 틀렸어요.';
@@ -665,6 +743,11 @@ window.switchTab = (tabId, btn) => {
   $(tabId).classList.add('active');
   btn.classList.add('active');
 };
+
+function updateDrawSettingsUI() {
+  const mi = $('drawMinInput'); if (mi) mi.value = drawMin;
+  const dc = $('drawCodeInput'); if (dc) dc.value = drawCode;
+}
 
 /* ── EMOJI PICKER ── */
 window.openEmojiPicker = (e, idx) => {
@@ -791,6 +874,35 @@ function renderCard() {
   const done = stamps.length, total = booths.length;
   $('stampProgress').style.width = (done / total * 100) + '%';
   $('stampCount').textContent = `${done}/${total}`;
+  updateSubmitBtn(done, total);
+}
+
+function updateSubmitBtn(done, total) {
+  const btn = $('submitBtn');
+  const hint = $('submitHint');
+  if (!btn) return;
+  const requiredMissing = booths.some((b, i) => b.required && !stamps.includes(i));
+  const meetsDrawMin = done >= drawMin;
+  const canSubmit = !requiredMissing && meetsDrawMin;
+
+  if (canSubmit) {
+    btn.className = 'btn btn-primary';
+    btn.onclick = submitStamps;
+    if (done === total) {
+      hint.innerHTML = `🎟 <span style="color:var(--green)">뽑기 2회</span> 기회를 받을 수 있어요!`;
+    } else {
+      hint.innerHTML = `🎟 <span style="color:var(--accent)">뽑기 1회</span> 기회를 받을 수 있어요`;
+    }
+  } else {
+    btn.className = 'btn btn-disabled';
+    btn.onclick = null;
+    if (requiredMissing) {
+      const names = booths.filter((b,i) => b.required && !stamps.includes(i)).map(b=>b.name).join(', ');
+      hint.innerHTML = `★ 필수 부스를 완료해야 제출할 수 있어요<br><span style="color:var(--red)">${names}</span>`;
+    } else {
+      hint.innerHTML = `${done}/${drawMin}개 이상 참여해야 제출할 수 있어요`;
+    }
+  }
 }
 
 /* ── BOOTH ── */
@@ -824,15 +936,6 @@ window.tryStamp = async () => {
     }
     show('s-card');
     showToast(`${b.emoji} ${b.name} 스탬프 획득!`);
-
-    // 필수 부스 포함 완료 체크
-    const requiredAll = booths.every((b, i) => !b.required || stamps.includes(i));
-    const allDone = stamps.length === booths.length;
-    if (allDone || (requiredAll && booths.some(b => b.required) && stamps.length === booths.length)) {
-      setTimeout(showComplete, 900);
-    } else if (allDone) {
-      setTimeout(showComplete, 900);
-    }
   } else {
     $('boothError').textContent = '비밀번호가 틀렸어요. 다시 확인해주세요.';
     $('boothPwInput').value = '';
@@ -845,16 +948,90 @@ window.tryStamp = async () => {
 window.backToCard = () => { currentBooth = null; show('s-card'); };
 
 /* ── COMPLETE ── */
+/* ── SUBMIT & COUPON ── */
+window.submitStamps = async () => {
+  await showComplete();
+};
+
 async function showComplete() {
-  $('completeSub').innerHTML = `<strong style="color:var(--accent)">${participant.name}</strong> 님, 모든 스탬프를 모았어요! 🎉<br>운영진에게 이 화면을 보여주세요.`;
-  $('completeStamps').innerHTML = booths.map((b, i) => {
+  const done = stamps.length;
+  const total = booths.length;
+  const allDone = done === total;
+
+  // 쿠폰 수 계산
+  let coupons = 0;
+  if (allDone) coupons = 2;
+  else if (done >= drawMin) coupons = 1;
+
+  // 결과 통계
+  $('completeSub').innerHTML = `<strong style="color:var(--accent)">${participant.name}</strong> 님, 수고하셨어요! 🎉`;
+  $('resultStampCount').textContent = done;
+  $('resultTotal').textContent = total;
+  $('resultCoupons').textContent = coupons;
+
+  // 참여 부스 요약
+  $('resultStamps').innerHTML = booths.map((b, i) => {
+    const earned = stamps.includes(i);
     const c = COLORS[i % COLORS.length];
-    return `<div style="width:46px;height:46px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:20px">${b.emoji}</div>`;
+    return `<div class="stamp-dot" style="background:${earned ? c+'33' : 'rgba(255,255,255,.05)'};border:2px solid ${earned ? c+'80' : 'rgba(255,255,255,.1)'}">
+      <span style="opacity:${earned ? 1 : 0.25}">${b.emoji}</span>
+    </div>`;
   }).join('');
+
+  // 쿠폰 렌더
+  const wrap = $('couponWrap');
+  const noMsg = $('noCouponMsg');
+  if (coupons > 0) {
+    wrap.style.display = 'flex';
+    noMsg.style.display = 'none';
+    wrap.innerHTML = Array.from({ length: coupons }, (_, i) => `
+      <div class="coupon">
+        <div class="coupon-inner">
+          <div class="coupon-deco"></div>
+          <div class="coupon-deco-r"></div>
+          <div class="coupon-left">
+            <span class="coupon-emoji">🎟</span>
+            <div class="coupon-num">NO.${String(i+1).padStart(2,'0')}</div>
+          </div>
+          <div class="coupon-mid">
+            <div class="coupon-title">뽑기 쿠폰</div>
+            <div class="coupon-sub">${eventName}<br>${participant.name} · ${participant.school}</div>
+          </div>
+          <div class="coupon-badge">${i === 0 && coupons === 2 ? '보너스' : '1회'}</div>
+        </div>
+      </div>`).join('');
+  } else {
+    wrap.style.display = 'none';
+    noMsg.style.display = 'block';
+    noMsg.innerHTML = `<span style="font-size:32px">😢</span><br><br>
+      뽑기 기회를 받으려면<br>
+      <strong style="color:var(--accent)">${drawMin}개 이상</strong> 부스에 참여해야 해요.<br>
+      <span style="font-size:12px">(현재 ${done}개 참여)</span>`;
+  }
+
   await addCompleted(participant, stamps);
-  markDone(participant.name, participant.school); // 📱 이 기기에 오늘 완료 기록
+  markDone(participant.name, participant.school);
   show('s-complete');
 }
+
+/* ── UNLOCK CODE ── */
+window.tryUnlockCode = function() {
+  const input = $('unlockCodeInput').value.trim().toUpperCase();
+  const errEl = $('unlockError');
+  if (!drawCode) {
+    errEl.textContent = '해제 코드가 설정되지 않았어요. 운영진에게 문의하세요.';
+    return;
+  }
+  if (input === drawCode) {
+    try { localStorage.removeItem(LS_DONE_KEY); } catch(e) {}
+    $('unlockCodeInput').value = '';
+    errEl.textContent = '';
+    showToast('✅ 참여 기록이 해제됐어요!');
+    show('s-start');
+  } else {
+    errEl.textContent = '코드가 틀렸어요. 운영진에게 다시 확인해주세요.';
+  }
+};
 
 /* ── RESET / AUTO-RESET ── */
 window.resetAllStamps = async function() {
