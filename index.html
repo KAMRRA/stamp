@@ -357,23 +357,13 @@ function setLoading(text, visible = true) {
 
 /* ── FIREBASE CONNECT ── */
 function parseFirebaseConfig(raw) {
-  // Extract JSON object from the config text
-  const match = raw.match(/\{[\s\S]*\}/);
+  let s = raw.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  const match = s.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('설정 객체를 찾을 수 없어요');
-  let s = match[0];
-  // remove comments
-  s = s.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
-  // remove trailing commas
-  s = s.replace(/,(\s*[}\]])/g, '$1');
-  // quote unquoted keys
-  s = s.replace(/([{,]\s*)([a-zA-Z_]\w*)\s*:/g, '$1"$2":');
-  // quote unquoted string values (non-number, non-bool)
-  s = s.replace(/:\s*([^",\s\[\]{}\d][^,\s\]}\n]*)/g, (m, v) => {
-    const t = v.trim();
-    if (t === 'true' || t === 'false' || t === 'null') return ': ' + t;
-    return ': "' + t.replace(/"/g, '') + '"';
-  });
-  return JSON.parse(s);
+  const fn = new Function('return ' + match[0]);
+  const result = fn();
+  if (typeof result !== 'object' || !result) throw new Error('객체가 아니에요');
+  return result;
 }
 
 async function connectFirebase(savedRaw) {
