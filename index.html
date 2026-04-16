@@ -312,10 +312,23 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, set, get, onValue, push, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   🔥 FIREBASE 설정 (여기만 수정하세요)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyALkLxA9HP021XyRNMlN5S96JgKGayA99Q",
+  authDomain: "stamp-cfaa1.firebaseapp.com",
+  databaseURL: "https://stamp-cfaa1-default-rtdb.firebaseio.com",
+  projectId: "stamp-cfaa1",
+  storageBucket: "stamp-cfaa1.firebasestorage.app",
+  messagingSenderId: "925306643094",
+  appId: "1:925306643094:web:06cea8bef7d4a2585918b7"
+};
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
 /* ── CONSTANTS ── */
 const EMOJIS = ['🎯','🎪','🎨','🎭','🎬','🎤','🎸','🎺','🌟','🔥','⚡','🌈','🍕','🍦','🎂','🏆','🚀','💎','🌸','🦋','🐉','🦁','🐬','🦄','🎁','🎀','🎮','🕹️','⚽','🏀'];
 const COLORS = ['#f0c040','#e07b30','#3ecf72','#e05580','#7b6cf0','#40c0cf','#cf7b40','#cf40a0','#40cfb0','#c0e040'];
-const LS_FB = 'stamp_fb_config';
 
 /* ── STATE ── */
 let db = null;
@@ -367,46 +380,15 @@ function parseFirebaseConfig(raw) {
   return JSON.parse(s);
 }
 
-async function connectFirebase(savedRaw) {
-  const raw = savedRaw || document.getElementById('firebaseConfigInput')?.value?.trim() || '';
-  const errEl = document.getElementById('setupError');
-  if (errEl) errEl.textContent = '';
-
-  if (!raw) {
-    if (errEl) errEl.textContent = 'firebaseConfig를 붙여넣어 주세요.';
-    return;
-  }
-
-  let config;
-  try { config = parseFirebaseConfig(raw); }
-  catch(e) {
-    if (errEl) errEl.textContent = '형식 오류: ' + e.message + '\n그대로 복사해서 붙여넣어 주세요.';
-    return;
-  }
-
-  if (!config.projectId) {
-    if (errEl) errEl.textContent = 'projectId가 없어요. 올바른 firebaseConfig인지 확인해주세요.';
-    return;
-  }
-
-  // databaseURL 자동 보정
-  if (!config.databaseURL) {
-    config.databaseURL = `https://${config.projectId}-default-rtdb.firebaseio.com`;
-  }
-
+async function connectFirebase(config) {
   setLoading('Firebase 연결 중...');
   try {
     const app = initializeApp(config);
     db = getDatabase(app);
 
-    // 연결 테스트
     setLoading('데이터 불러오는 중...');
     await loadConfig();
 
-    // 저장
-    lsSave(LS_FB, raw);
-
-    // 실시간 리스너
     listenConfig();
     listenCompleted();
 
@@ -416,20 +398,10 @@ async function connectFirebase(savedRaw) {
   } catch(e) {
     setLoading('', false);
     console.error(e);
-    let msg = e.message || '연결 실패';
-    if (msg.includes('permission')) msg = '권한 오류: Realtime Database를 테스트 모드로 설정했는지 확인해주세요.';
-    if (msg.includes('databaseURL') || msg.includes('400')) msg = 'databaseURL이 잘못됐어요. Realtime Database를 생성했는지 확인해주세요.';
-    if (errEl) errEl.textContent = msg;
-    show('s-setup');
+    alert('Firebase 연결 실패: ' + e.message);
   }
 }
 window.connectFirebase = connectFirebase;
-
-window.resetFirebase = function() {
-  if (!confirm('Firebase 설정을 초기화할까요?')) return;
-  try { localStorage.removeItem(LS_FB); } catch(e) {}
-  location.reload();
-};
 
 /* ── FIREBASE: CONFIG ── */
 async function loadConfig() {
@@ -704,13 +676,8 @@ if (bp !== null) { const i = parseInt(bp) - 1; if (!isNaN(i)) window._pendingBoo
 
 /* ── INIT ── */
 (async () => {
-  const saved = lsLoad(LS_FB);
-  if (saved) {
-    await connectFirebase(saved);
-  } else {
-    setLoading('', false);
-    show('s-setup');
-  }
+  setLoading('Firebase 연결 중...');
+  await connectFirebase(FIREBASE_CONFIG);
 })();
 </script>
 </body>
