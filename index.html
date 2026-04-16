@@ -153,6 +153,17 @@ input:focus{border-color:var(--accent)}
 .unlock-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:16px;border:1px solid rgba(255,255,255,.08)}
 .unlock-title{font-size:12px;color:var(--muted);margin-bottom:8px;text-align:center}
 
+/* admin layout - 탭 고정, 내용 스크롤 */
+#s-admin{align-items:stretch;padding:0;overflow:hidden}
+#s-admin .admin-wrap{display:flex;flex-direction:column;height:100%;width:100%;max-width:440px;margin:0 auto}
+#s-admin .admin-header{padding:16px 16px 8px;flex-shrink:0;background:var(--bg)}
+#s-admin .admin-tabbar{display:flex;gap:4px;padding:0 16px;flex-shrink:0;background:var(--bg);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+#s-admin .admin-tabbar::-webkit-scrollbar{display:none}
+#s-admin .admin-tab-btn{flex-shrink:0;padding:10px 16px;border:none;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-family:'Jua',sans-serif;font-size:14px;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap}
+#s-admin .admin-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+#s-admin .admin-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 24px}
+#s-admin .admin-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid rgba(255,255,255,.07);box-shadow:0 4px 20px rgba(0,0,0,.3)}
+
 /* misc */
 .emoji-picker{position:fixed;background:var(--card2);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .emoji-picker span{font-size:22px;cursor:pointer;border-radius:6px;padding:4px;text-align:center;transition:background .15s}
@@ -176,19 +187,28 @@ input:focus{border-color:var(--accent)}
 
 <!-- SCREEN: ADMIN -->
 <div class="screen" id="s-admin">
-  <div class="screen-inner">
-    <div class="logo">⚙️ 관리자</div>
-    <div class="firebase-status">
-      <div class="status-dot ok"></div>
-      <span>Firebase 실시간 동기화</span>
+  <div class="admin-wrap">
+    <!-- 고정 헤더 -->
+    <div class="admin-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div style="font-family:'Jua',sans-serif;font-size:22px;color:var(--accent)">⚙️ 관리자</div>
+        <div class="firebase-status" style="margin:0">
+          <div class="status-dot ok"></div>
+          <span>실시간 동기화</span>
+        </div>
+      </div>
     </div>
-    <div class="tab-bar">
-      <button class="tab-btn active" onclick="switchTab('tab-booths',this)">부스 설정</button>
-      <button class="tab-btn" onclick="switchTab('tab-participants',this)">참가자</button>
-      <button class="tab-btn" onclick="switchTab('tab-completed',this)">완료자</button>
-      <button class="tab-btn" onclick="switchTab('tab-reset',this)">초기화</button>
+    <!-- 고정 탭바 -->
+    <div class="admin-tabbar">
+      <button class="admin-tab-btn active" onclick="switchAdminTab('tab-booths',this)">부스 설정</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tab-participants',this)">참가자</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tab-completed',this)">완료자</button>
+      <button class="admin-tab-btn" onclick="switchAdminTab('tab-reset',this)">초기화</button>
     </div>
-    <div class="card">
+    <div style="height:1px;background:rgba(255,255,255,.07);flex-shrink:0"></div>
+    <!-- 스크롤 영역 -->
+    <div class="admin-body">
+    <div class="admin-card">
 
       <!-- 부스 설정 탭 -->
       <div class="tab-panel active" id="tab-booths">
@@ -262,8 +282,10 @@ input:focus{border-color:var(--accent)}
         <button class="btn btn-ghost" style="font-size:14px;padding:11px" onclick="clearDeviceRecord()">📱 이 기기 참여 기록 삭제</button>
       </div>
     </div>
+    </div><!-- /admin-card -->
     <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 참여자 화면으로</button>
-  </div>
+    </div><!-- /admin-body -->
+  </div><!-- /admin-wrap -->
 </div>
 
 <!-- SCREEN: ALREADY PARTICIPATED -->
@@ -743,6 +765,16 @@ window.switchTab = (tabId, btn) => {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   $(tabId).classList.add('active');
   btn.classList.add('active');
+};
+
+window.switchAdminTab = (tabId, btn) => {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+  $(tabId).classList.add('active');
+  btn.classList.add('active');
+  // 스크롤 맨 위로
+  const body = document.querySelector('#s-admin .admin-body');
+  if (body) body.scrollTop = 0;
 };
 
 function updateDrawSettingsUI() {
