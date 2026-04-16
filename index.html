@@ -6,127 +6,136 @@
 <title>스탬프 랠리</title>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0f1923; --card: #1a2634; --card2: #1f2e40;
-    --accent: #f0c040; --accent2: #e07b30; --green: #3ecf72;
-    --text: #eef2f7; --muted: #7a90a8; --radius: 16px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 60% 50% at 20% 10%, rgba(240,192,64,0.07) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 80% 90%, rgba(62,207,114,0.06) 0%, transparent 70%); pointer-events: none; }
+:root {
+  --bg:#0f1923; --card:#1a2634; --card2:#1f2e40;
+  --accent:#f0c040; --accent2:#e07b30; --green:#3ecf72;
+  --red:#e05580; --text:#eef2f7; --muted:#7a90a8; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 50% at 20% 10%,rgba(240,192,64,.07) 0%,transparent 70%),radial-gradient(ellipse 50% 60% at 80% 90%,rgba(62,207,114,.06) 0%,transparent 70%);pointer-events:none}
 
-  .screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px 20px; opacity: 0; pointer-events: none; transform: translateY(24px); transition: opacity 0.35s, transform 0.35s; overflow-y: auto; }
-  .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
-  .screen-inner { width: 100%; max-width: 420px; }
+/* screens */
+.screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px 16px;opacity:0;pointer-events:none;transform:translateY(24px);transition:opacity .35s,transform .35s;overflow-y:auto}
+.screen.active{opacity:1;pointer-events:all;transform:translateY(0)}
+.screen-inner{width:100%;max-width:440px}
 
-  .logo { font-family: 'Jua', sans-serif; font-size: 34px; color: var(--accent); text-align: center; letter-spacing: 2px; margin-bottom: 6px; text-shadow: 0 0 40px rgba(240,192,64,0.4); }
-  .subtitle { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 28px; letter-spacing: 1px; }
-  .card { background: var(--card); border-radius: var(--radius); padding: 24px 20px; border: 1px solid rgba(255,255,255,0.07); box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+/* typography */
+.logo{font-family:'Jua',sans-serif;font-size:32px;color:var(--accent);text-align:center;letter-spacing:2px;margin-bottom:6px;text-shadow:0 0 40px rgba(240,192,64,.4)}
+.subtitle{text-align:center;font-size:13px;color:var(--muted);margin-bottom:24px;letter-spacing:1px}
 
-  .field-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
-  input[type="text"], input[type="password"] { width: 100%; background: var(--bg); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 16px; padding: 13px 16px; outline: none; transition: border-color 0.2s; }
-  input:focus { border-color: var(--accent); }
-  textarea { width: 100%; background: var(--bg); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-family: monospace; font-size: 12px; padding: 12px 14px; outline: none; resize: vertical; min-height: 150px; line-height: 1.6; transition: border-color 0.2s; }
-  textarea:focus { border-color: var(--accent); }
+/* card */
+.card{background:var(--card);border-radius:var(--radius);padding:22px 18px;border:1px solid rgba(255,255,255,.07);box-shadow:0 8px 40px rgba(0,0,0,.4)}
 
-  .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-family: 'Jua', sans-serif; font-size: 17px; letter-spacing: 1px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; margin-top: 14px; }
-  .btn:active { transform: scale(0.97); }
-  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #1a1400; box-shadow: 0 4px 20px rgba(240,192,64,0.3); }
-  .btn-ghost { background: rgba(255,255,255,0.06); color: var(--muted); }
-  .btn-green { background: linear-gradient(135deg, var(--green), #2aaa58); color: #0a2018; box-shadow: 0 4px 20px rgba(62,207,114,0.3); margin-top: 20px; }
-  .btn-danger { background: rgba(224,85,128,0.1); color: #e05580; border: 1px solid rgba(224,85,128,0.25); }
-  .admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 13px 20px; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 12px; color: var(--muted); font-family: 'Jua', sans-serif; font-size: 15px; cursor: pointer; width: 100%; transition: background 0.2s, border-color 0.2s, color 0.2s; }
-  .admin-btn:hover { background: rgba(240,192,64,0.08); border-color: rgba(240,192,64,0.3); color: var(--accent); }
+/* inputs */
+.field-label{font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:7px;font-weight:700;text-transform:uppercase}
+input[type=text],input[type=password]{width:100%;background:var(--bg);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:16px;padding:12px 14px;outline:none;transition:border-color .2s}
+input:focus{border-color:var(--accent)}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.input-row .field-wrap{display:flex;flex-direction:column}
+.input-row input{font-size:14px;padding:11px 12px}
 
-  /* setup steps */
-  .setup-step { display: flex; gap: 12px; margin-bottom: 16px; }
-  .step-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(240,192,64,0.12); border: 1.5px solid rgba(240,192,64,0.35); color: var(--accent); font-family: 'Jua', sans-serif; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-  .step-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
-  .step-text strong { color: var(--text); }
-  .step-text a { color: var(--accent); text-decoration: none; }
-  .code-hint { background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.07); padding: 10px 12px; font-family: monospace; font-size: 11px; color: #5ab; line-height: 1.7; margin-top: 8px; white-space: pre-wrap; word-break: break-all; }
+/* buttons */
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-family:'Jua',sans-serif;font-size:17px;letter-spacing:1px;cursor:pointer;transition:transform .15s,box-shadow .15s;margin-top:12px}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;box-shadow:0 4px 20px rgba(240,192,64,.3)}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--muted)}
+.btn-green{background:linear-gradient(135deg,var(--green),#2aaa58);color:#0a2018;box-shadow:0 4px 20px rgba(62,207,114,.3);margin-top:20px}
+.btn-danger{background:rgba(224,85,128,.1);color:var(--red);border:1px solid rgba(224,85,128,.25)}
+.btn-download{background:rgba(62,207,114,.1);color:var(--green);border:1px solid rgba(62,207,114,.25);font-size:13px;padding:10px;margin-top:8px}
+.admin-btn{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:13px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:var(--muted);font-family:'Jua',sans-serif;font-size:15px;cursor:pointer;width:100%;transition:background .2s,border-color .2s,color .2s}
+.admin-btn:hover{background:rgba(240,192,64,.08);border-color:rgba(240,192,64,.3);color:var(--accent)}
 
-  /* tabs */
-  .tab-bar { display: flex; gap: 4px; background: var(--bg); border-radius: 10px; padding: 4px; margin-bottom: 16px; }
-  .tab-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; background: transparent; color: var(--muted); font-family: 'Jua', sans-serif; font-size: 13px; cursor: pointer; transition: background 0.2s, color 0.2s; }
-  .tab-btn.active { background: var(--card2); color: var(--accent); }
-  .tab-panel { display: none; }
-  .tab-panel.active { display: block; }
+/* tabs */
+.tab-bar{display:flex;gap:3px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:14px}
+.tab-btn{flex:1;padding:8px 4px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:'Jua',sans-serif;font-size:12px;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
+.tab-btn.active{background:var(--card2);color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
-  /* admin booth list */
-  .admin-booth-list { display: flex; flex-direction: column; gap: 7px; margin: 12px 0; max-height: 38vh; overflow-y: auto; }
-  .admin-booth-item { display: flex; align-items: center; gap: 7px; background: var(--bg); border-radius: 10px; padding: 7px 9px; }
-  .admin-booth-item input[type="text"] { flex: 1; font-size: 13px; padding: 7px 10px; }
-  .admin-booth-item .pw-field { width: 76px; font-size: 13px; padding: 7px 9px; }
-  .emoji-btn { width: 38px; height: 38px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 19px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .add-booth-btn { background: rgba(240,192,64,0.08); border: 1.5px dashed rgba(240,192,64,0.35); border-radius: 10px; color: var(--accent); font-family: 'Jua', sans-serif; font-size: 14px; padding: 11px; cursor: pointer; width: 100%; transition: background 0.2s; }
-  .add-booth-btn:hover { background: rgba(240,192,64,0.16); }
-  .section-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 18px 0; }
+/* admin booth list */
+.admin-booth-list{display:flex;flex-direction:column;gap:6px;margin:10px 0;max-height:36vh;overflow-y:auto}
+.admin-booth-item{display:flex;align-items:center;gap:6px;background:var(--bg);border-radius:10px;padding:6px 8px}
+.admin-booth-item input[type=text]{flex:1;font-size:13px;padding:7px 10px}
+.admin-booth-item .pw-field{width:72px;font-size:13px;padding:7px 8px}
+.required-toggle{width:34px;height:34px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s,border-color .2s}
+.required-toggle.on{background:rgba(240,192,64,.15);border-color:rgba(240,192,64,.5)}
+.emoji-btn{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.add-booth-btn{background:rgba(240,192,64,.08);border:1.5px dashed rgba(240,192,64,.35);border-radius:10px;color:var(--accent);font-family:'Jua',sans-serif;font-size:14px;padding:10px;cursor:pointer;width:100%;transition:background .2s}
+.add-booth-btn:hover{background:rgba(240,192,64,.16)}
+.section-divider{border:none;border-top:1px solid rgba(255,255,255,.07);margin:16px 0}
+.hint-text{font-size:11px;color:var(--muted);line-height:1.5;margin-bottom:10px}
 
-  /* completed list */
-  .completed-list { max-height: 48vh; overflow-y: auto; margin-top: 10px; }
-  .completed-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: var(--bg); margin-bottom: 6px; }
-  .c-name { font-weight: 700; font-size: 14px; color: var(--text); }
-  .c-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
-  .c-badge { background: rgba(62,207,114,0.12); border: 1px solid rgba(62,207,114,0.28); border-radius: 20px; color: var(--green); font-size: 11px; padding: 3px 10px; font-family: 'Jua', sans-serif; white-space: nowrap; }
-  .empty-state { text-align: center; color: var(--muted); font-size: 13px; padding: 28px; }
+/* list items */
+.list-scroll{max-height:46vh;overflow-y:auto;margin-top:8px}
+.list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-radius:10px;background:var(--bg);margin-bottom:5px}
+.li-main{font-weight:700;font-size:13px;color:var(--text)}
+.li-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.badge-green{background:rgba(62,207,114,.12);border:1px solid rgba(62,207,114,.28);border-radius:20px;color:var(--green);font-size:11px;padding:3px 9px;font-family:'Jua',sans-serif;white-space:nowrap}
+.badge-muted{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:20px;color:var(--muted);font-size:11px;padding:3px 9px;font-family:'Jua',sans-serif;white-space:nowrap}
+.empty-state{text-align:center;color:var(--muted);font-size:13px;padding:28px}
+.list-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
 
-  /* stamp grid */
-  .stamp-grid { display: grid; gap: 10px; margin: 18px 0; }
-  .stamp-cell { aspect-ratio: 1; border-radius: 13px; border: 2px dashed rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: border-color 0.3s; overflow: hidden; cursor: pointer; }
-  .stamp-cell.earned { border-style: solid; border-color: transparent; }
-  .stamp-cell-num { font-family: 'Jua', sans-serif; font-size: 11px; color: rgba(255,255,255,0.2); position: absolute; top: 5px; left: 8px; }
-  .stamp-cell-name { font-size: 10px; color: rgba(255,255,255,0.25); text-align: center; padding: 0 4px; line-height: 1.3; }
-  .stamp-cell.earned .stamp-cell-name { display: none; }
-  .stamp-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; opacity: 0; transform: scale(0) rotate(-30deg); position: relative; }
-  .stamp-cell.earned .stamp-icon { opacity: 1; transform: scale(1) rotate(-8deg); transition: opacity 0.4s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.4); }
-  .stamp-cell.just-stamped .stamp-icon { animation: stampPop 0.5s cubic-bezier(0.175,0.885,0.32,1.4) forwards; }
-  @keyframes stampPop { 0% { transform: scale(2.2) rotate(-30deg); opacity: 0; } 60% { transform: scale(0.88) rotate(-6deg); opacity: 1; } 80% { transform: scale(1.1) rotate(-10deg); opacity: 1; } 100% { transform: scale(1) rotate(-8deg); opacity: 1; } }
-  .stamp-icon::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid currentColor; opacity: 0.35; }
+/* stamp grid */
+.stamp-grid{display:grid;gap:9px;margin:16px 0}
+.stamp-cell{aspect-ratio:1;border-radius:13px;border:2px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.03);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:border-color .3s;overflow:hidden;cursor:pointer}
+.stamp-cell.earned{border-style:solid;border-color:transparent}
+.stamp-cell.required-cell::after{content:'★';position:absolute;top:4px;right:6px;font-size:10px;color:var(--accent);opacity:.8}
+.stamp-cell-num{font-family:'Jua',sans-serif;font-size:10px;color:rgba(255,255,255,.2);position:absolute;top:4px;left:7px}
+.stamp-cell-name{font-size:10px;color:rgba(255,255,255,.25);text-align:center;padding:0 4px;line-height:1.3}
+.stamp-cell.earned .stamp-cell-name{display:none}
+.stamp-icon{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;transform:scale(0) rotate(-30deg);position:relative}
+.stamp-cell.earned .stamp-icon{opacity:1;transform:scale(1) rotate(-8deg);transition:opacity .4s,transform .4s cubic-bezier(.175,.885,.32,1.4)}
+.stamp-cell.just-stamped .stamp-icon{animation:stampPop .5s cubic-bezier(.175,.885,.32,1.4) forwards}
+@keyframes stampPop{0%{transform:scale(2.2) rotate(-30deg);opacity:0}60%{transform:scale(.88) rotate(-6deg);opacity:1}80%{transform:scale(1.1) rotate(-10deg);opacity:1}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+.stamp-icon::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:2px solid currentColor;opacity:.35}
 
-  .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
-  .progress-track { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
-  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
-  .progress-label { font-family: 'Jua', sans-serif; font-size: 13px; color: var(--accent); white-space: nowrap; }
+/* progress */
+.progress-row{display:flex;align-items:center;gap:10px;margin-bottom:5px}
+.progress-track{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:3px;transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+.progress-label{font-family:'Jua',sans-serif;font-size:13px;color:var(--accent);white-space:nowrap}
 
-  .complete-badge { width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle, rgba(240,192,64,0.2), rgba(62,207,114,0.1)); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 48px; animation: glow 2s ease-in-out infinite alternate; box-shadow: 0 0 40px rgba(240,192,64,0.3); }
-  @keyframes glow { from { box-shadow: 0 0 20px rgba(240,192,64,0.2); } to { box-shadow: 0 0 60px rgba(240,192,64,0.5); } }
-  .complete-title { font-family: 'Jua', sans-serif; font-size: 28px; text-align: center; color: var(--accent); margin-bottom: 8px; }
-  .complete-sub { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
+/* complete */
+.complete-badge{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(240,192,64,.2),rgba(62,207,114,.1));border:3px solid var(--accent);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:48px;animation:glow 2s ease-in-out infinite alternate;box-shadow:0 0 40px rgba(240,192,64,.3)}
+@keyframes glow{from{box-shadow:0 0 20px rgba(240,192,64,.2)}to{box-shadow:0 0 60px rgba(240,192,64,.5)}}
+.complete-title{font-family:'Jua',sans-serif;font-size:28px;text-align:center;color:var(--accent);margin-bottom:8px}
+.complete-sub{text-align:center;color:var(--muted);font-size:14px;line-height:1.6}
 
-  .booth-badge { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 12px; border: 2px solid rgba(255,255,255,0.15); }
-  .booth-title { font-family: 'Jua', sans-serif; font-size: 21px; text-align: center; margin-bottom: 4px; }
-  .booth-sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
-  .error-msg { color: #e05580; font-size: 13px; text-align: center; margin-top: 10px; min-height: 18px; }
+/* booth */
+.booth-badge{width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;border:2px solid rgba(255,255,255,.15)}
+.booth-title{font-family:'Jua',sans-serif;font-size:21px;text-align:center;margin-bottom:4px}
+.booth-sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:18px}
+.booth-required-badge{display:inline-block;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.35);border-radius:20px;padding:3px 12px;font-family:'Jua',sans-serif;font-size:12px;color:var(--accent);margin-bottom:14px}
+.error-msg{color:var(--red);font-size:13px;text-align:center;margin-top:10px;min-height:18px}
 
-  .name-badge { display: inline-block; background: rgba(240,192,64,0.12); border: 1px solid rgba(240,192,64,0.3); border-radius: 20px; padding: 4px 14px; font-family: 'Jua', sans-serif; font-size: 15px; color: var(--accent); margin-bottom: 14px; }
-  .qr-hint { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 11px 14px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 14px; border: 1px solid rgba(255,255,255,0.06); }
-  .qr-hint strong { color: var(--text); }
+/* badges */
+.name-badge{display:inline-block;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.3);border-radius:20px;padding:4px 14px;font-family:'Jua',sans-serif;font-size:15px;color:var(--accent);margin-bottom:12px}
+.qr-hint{background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px;border:1px solid rgba(255,255,255,.06)}
+.qr-hint strong{color:var(--text)}
+.firebase-status{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-bottom:12px;justify-content:center}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex-shrink:0}
+.status-dot.ok{background:var(--green);box-shadow:0 0 8px rgba(62,207,114,.5)}
 
-  .firebase-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); margin-bottom: 14px; justify-content: center; }
-  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
-  .status-dot.ok { background: var(--green); box-shadow: 0 0 8px rgba(62,207,114,0.5); }
-  .status-dot.err { background: #e05580; }
+/* modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:24px;z-index:500;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--card2);border:1px solid rgba(255,255,255,.1);border-radius:var(--radius);padding:24px 20px;width:100%;max-width:340px;box-shadow:0 16px 48px rgba(0,0,0,.5);transform:scale(.95);transition:transform .25s}
+.modal-overlay.open .modal-box{transform:scale(1)}
+.modal-title{font-family:'Jua',sans-serif;font-size:18px;color:var(--accent);margin-bottom:5px}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5}
 
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal-box { background: var(--card2); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 26px 22px; width: 100%; max-width: 340px; box-shadow: 0 16px 48px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.25s; }
-  .modal-overlay.open .modal-box { transform: scale(1); }
-  .modal-title { font-family: 'Jua', sans-serif; font-size: 18px; color: var(--accent); margin-bottom: 6px; }
-  .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
-
-  .emoji-picker { position: fixed; background: var(--card2); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 12px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; z-index: 999; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
-  .emoji-picker span { font-size: 22px; cursor: pointer; border-radius: 6px; padding: 4px; text-align: center; transition: background 0.15s; }
-  .emoji-picker span:hover { background: rgba(255,255,255,0.1); }
-
-  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--green); color: #0a2018; font-family: 'Jua', sans-serif; font-size: 15px; padding: 12px 24px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 1000; white-space: nowrap; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  .loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 200; transition: opacity 0.4s; }
-  .loading-screen.hidden { opacity: 0; pointer-events: none; }
-  .spinner { width: 40px; height: 40px; border: 3px solid rgba(240,192,64,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-family: 'Jua', sans-serif; color: var(--muted); font-size: 14px; }
+/* misc */
+.emoji-picker{position:fixed;background:var(--card2);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+.emoji-picker span{font-size:22px;cursor:pointer;border-radius:6px;padding:4px;text-align:center;transition:background .15s}
+.emoji-picker span:hover{background:rgba(255,255,255,.1)}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);font-family:'Jua',sans-serif;font-size:15px;padding:12px 24px;border-radius:24px;box-shadow:0 4px 20px rgba(0,0,0,.4);opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:1000;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:200;transition:opacity .4s}
+.loading-screen.hidden{opacity:0;pointer-events:none}
+.spinner{width:40px;height:40px;border:3px solid rgba(240,192,64,.15);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Jua',sans-serif;color:var(--muted);font-size:14px}
 </style>
 </head>
 <body>
@@ -137,105 +146,82 @@
   <div class="loading-text" id="loadingText">연결 중...</div>
 </div>
 
-<!-- SCREEN: FIREBASE SETUP -->
-<div class="screen" id="s-setup">
-  <div class="screen-inner">
-    <div class="logo">🔥 Firebase 설정</div>
-    <div class="subtitle">처음 한 번만 설정하면 돼요</div>
-    <div class="card">
-      <div class="setup-step">
-        <div class="step-num">1</div>
-        <div class="step-text"><a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> 접속 → <strong>프로젝트 추가</strong></div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">2</div>
-        <div class="step-text">프로젝트 생성 후 <strong>웹 앱 추가 (&lt;/&gt;)</strong> → 앱 닉네임 입력 → 등록</div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">3</div>
-        <div class="step-text">좌측 <strong>빌드 → Realtime Database</strong> → 데이터베이스 만들기 → <strong>테스트 모드</strong>로 시작</div>
-      </div>
-      <div class="setup-step">
-        <div class="step-num">4</div>
-        <div class="step-text">
-          프로젝트 설정 (⚙️) → 내 앱 → <strong>firebaseConfig 복사</strong> → 아래 붙여넣기
-          <div class="code-hint">const firebaseConfig = {
-  apiKey: "AIza...",
-  authDomain: "myapp.firebaseapp.com",
-  databaseURL: "https://myapp-default-rtdb...",
-  projectId: "myapp",
-  ...
-};</div>
-        </div>
-      </div>
-      <hr class="section-divider">
-      <div class="field-label" style="margin-bottom:8px">firebaseConfig 붙여넣기</div>
-      <textarea id="firebaseConfigInput" placeholder='const firebaseConfig = {
-  apiKey: "AIza...",
-  authDomain: "...",
-  databaseURL: "https://...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
-};'></textarea>
-      <div class="error-msg" id="setupError"></div>
-      <button class="btn btn-primary" onclick="connectFirebase()">🔥 연결하기</button>
-    </div>
-  </div>
-</div>
-
 <!-- SCREEN: ADMIN -->
 <div class="screen" id="s-admin">
   <div class="screen-inner">
     <div class="logo">⚙️ 관리자</div>
     <div class="firebase-status">
-      <div class="status-dot ok" id="adminDot"></div>
-      <span id="adminStatusText">Firebase 연결됨 · 실시간 동기화</span>
+      <div class="status-dot ok"></div>
+      <span>Firebase 실시간 동기화</span>
     </div>
     <div class="card">
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('tab-booths',this)">부스 설정</button>
-        <button class="tab-btn" onclick="switchTab('tab-completed',this)">완료자 명단</button>
+        <button class="tab-btn" onclick="switchTab('tab-participants',this)">참가자</button>
+        <button class="tab-btn" onclick="switchTab('tab-completed',this)">완료자</button>
       </div>
 
+      <!-- 부스 설정 탭 -->
       <div class="tab-panel active" id="tab-booths">
-        <div class="field-label">부스 목록</div>
+        <div class="hint-text">★ 아이콘 = 필수 부스 · 비밀번호는 운영진용</div>
         <div class="admin-booth-list" id="adminBoothList"></div>
         <button class="add-booth-btn" onclick="addBooth()">＋ 부스 추가</button>
         <hr class="section-divider">
         <div class="field-label" style="margin-bottom:8px">이벤트 이름</div>
-        <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:14px">
+        <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:12px">
         <div class="field-label" style="margin-bottom:8px">관리자 비밀번호 변경 (선택)</div>
         <input type="password" id="newAdminPw" placeholder="새 비밀번호 (비우면 유지)">
         <button class="btn btn-primary" onclick="saveAdmin()">☁️ 저장 · 모든 기기에 반영</button>
       </div>
 
+      <!-- 참가자 탭 -->
+      <div class="tab-panel" id="tab-participants">
+        <div class="list-header">
+          <div class="field-label" style="margin:0">참가자 명단</div>
+          <span id="participantCount" style="font-family:'Jua',sans-serif;font-size:13px;color:var(--accent)">0명</span>
+        </div>
+        <div class="list-scroll" id="participantList">
+          <div class="empty-state">아직 참가자가 없어요</div>
+        </div>
+        <button class="btn btn-download" onclick="downloadParticipantsCSV()">⬇ 참가자 명단 CSV 다운로드</button>
+        <button class="btn btn-danger" style="font-size:13px;padding:10px" onclick="clearParticipants()">🗑 참가자 명단 초기화</button>
+      </div>
+
+      <!-- 완료자 탭 -->
       <div class="tab-panel" id="tab-completed">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div class="list-header">
           <div class="field-label" style="margin:0">완료자 명단</div>
           <span id="completedCount" style="font-family:'Jua',sans-serif;font-size:13px;color:var(--green)">0명</span>
         </div>
-        <div class="completed-list" id="completedList">
+        <div class="list-scroll" id="completedList">
           <div class="empty-state">아직 완료한 참여자가 없어요</div>
         </div>
-        <button class="btn btn-danger" style="margin-top:10px;font-size:13px;padding:10px" onclick="clearCompleted()">🗑 명단 초기화</button>
+        <button class="btn btn-download" onclick="downloadCompletedCSV()">⬇ 완료자 명단 CSV 다운로드</button>
+        <button class="btn btn-danger" style="font-size:13px;padding:10px" onclick="clearCompleted()">🗑 완료자 명단 초기화</button>
       </div>
     </div>
     <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 참여자 화면으로</button>
-    <button class="btn btn-ghost" style="margin-top:6px;font-size:12px;color:rgba(255,255,255,0.2)" onclick="resetFirebase()">Firebase 재설정</button>
   </div>
 </div>
 
-<!-- SCREEN: START -->
-<div class="screen" id="s-start">
+<!-- SCREEN: START (참가자 등록) -->
+<div class="screen active" id="s-start">
   <div class="screen-inner">
     <div class="logo" id="startLogo">🎪 스탬프 랠리</div>
-    <div class="subtitle">모든 부스를 돌아다니며 스탬프를 모아보세요!</div>
+    <div class="subtitle">정보를 입력하고 스탬프를 모아보세요!</div>
     <div class="card">
-      <div class="field-label">이름을 입력해주세요</div>
-      <input type="text" id="participantName" placeholder="홍길동" maxlength="20"
-        onkeydown="if(event.key==='Enter') startRally()">
+      <div class="field-label" style="margin-bottom:8px">이름</div>
+      <input type="text" id="inputName" placeholder="홍길동" maxlength="20" style="margin-bottom:12px">
+      <div class="input-row">
+        <div class="field-wrap">
+          <div class="field-label">학교</div>
+          <input type="text" id="inputSchool" placeholder="○○초등학교" maxlength="30">
+        </div>
+        <div class="field-wrap">
+          <div class="field-label">학년</div>
+          <input type="text" id="inputGrade" placeholder="예: 3학년" maxlength="10">
+        </div>
+      </div>
       <button class="btn btn-primary" onclick="startRally()">스탬프 랠리 시작! 🚀</button>
     </div>
     <button class="admin-btn" onclick="openAdminModal()">⚙️ 관리자 설정</button>
@@ -245,19 +231,20 @@
 <!-- SCREEN: STAMP CARD -->
 <div class="screen" id="s-card">
   <div class="screen-inner">
-    <div style="text-align:center;margin-bottom:14px">
+    <div style="text-align:center;margin-bottom:12px">
       <div class="name-badge" id="cardNameBadge">홍길동 님</div>
-      <div class="logo" style="font-size:24px;margin-bottom:2px">스탬프 카드</div>
+      <div class="logo" style="font-size:22px;margin-bottom:2px">스탬프 카드</div>
     </div>
     <div class="card">
       <div class="progress-row">
         <div class="progress-track"><div class="progress-bar" id="stampProgress"></div></div>
         <div class="progress-label" id="stampCount">0/0</div>
       </div>
+      <div id="requiredNotice" style="font-size:11px;color:var(--accent);margin-bottom:4px;display:none">★ 필수 부스 포함</div>
       <div class="stamp-grid" id="stampGrid"></div>
-      <div class="qr-hint">📱 <strong>각 부스에서 운영진</strong>에게 스탬프를 받으세요</div>
+      <div class="qr-hint">📱 <strong>각 부스에서 운영진</strong>에게 스탬프를 받으세요<br><span style="color:var(--accent)">★ = 필수 부스</span></div>
     </div>
-    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:14px">← 처음으로</button>
+    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:12px">← 처음으로</button>
   </div>
 </div>
 
@@ -267,6 +254,9 @@
     <div class="card">
       <div class="booth-badge" id="boothBadge">🎯</div>
       <div class="booth-title" id="boothTitle">부스 이름</div>
+      <div id="boothRequiredBadge" style="text-align:center;margin-bottom:4px;display:none">
+        <span class="booth-required-badge">★ 필수 부스</span>
+      </div>
       <div class="booth-sub">운영진이 비밀번호를 입력해 스탬프를 찍어주세요</div>
       <div class="field-label">비밀번호</div>
       <input type="password" id="boothPwInput" placeholder="••••" maxlength="20"
@@ -281,11 +271,11 @@
 <!-- SCREEN: COMPLETE -->
 <div class="screen" id="s-complete">
   <div class="screen-inner">
-    <div class="card" style="text-align:center;padding:36px 20px">
+    <div class="card" style="text-align:center;padding:32px 18px">
       <div class="complete-badge">🏆</div>
       <div class="complete-title">축하해요!</div>
       <div class="complete-sub" id="completeSub">모든 스탬프를 모았어요 🎉</div>
-      <div id="completeStamps" style="margin:20px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px"></div>
+      <div id="completeStamps" style="margin:18px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px"></div>
       <button class="btn btn-green" onclick="goStart()">처음으로 돌아가기</button>
     </div>
   </div>
@@ -326,29 +316,27 @@ const FIREBASE_CONFIG = {
 };
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-/* ── CONSTANTS ── */
 const EMOJIS = ['🎯','🎪','🎨','🎭','🎬','🎤','🎸','🎺','🌟','🔥','⚡','🌈','🍕','🍦','🎂','🏆','🚀','💎','🌸','🦋','🐉','🦁','🐬','🦄','🎁','🎀','🎮','🕹️','⚽','🏀'];
 const COLORS = ['#f0c040','#e07b30','#3ecf72','#e05580','#7b6cf0','#40c0cf','#cf7b40','#cf40a0','#40cfb0','#c0e040'];
 
 /* ── STATE ── */
 let db = null;
-let booths = [{ name: '부스 1', pw: '1234', emoji: '🎯' }];
+let booths = [{ name: '부스 1', pw: '1234', emoji: '🎯', required: false }];
 let eventName = '스탬프 랠리';
 let adminPw = 'admin';
-let participant = '';
+let participant = { name: '', school: '', grade: '' };
 let stamps = [];
 let currentBooth = null;
 let emojiTarget = null;
 
 /* ── UTILS ── */
-const lsSave = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
-const lsLoad = (k) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e) { return null; } };
-const safeKey = (n) => n.replace(/[.#$\[\]\/]/g, '_');
+const safeKey = n => n.replace(/[.#$\[\]\/\s]/g, '_');
+const $ = id => document.getElementById(id);
 
-function showToast(msg, isErr) {
-  const t = document.getElementById('toast');
+function showToast(msg, isErr = false) {
+  const t = $('toast');
   t.textContent = msg;
-  t.style.background = isErr ? '#e05580' : 'var(--green)';
+  t.style.background = isErr ? 'var(--red)' : 'var(--green)';
   t.style.color = isErr ? '#fff' : '#0a2018';
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2600);
@@ -357,51 +345,34 @@ window.showToast = showToast;
 
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  setTimeout(() => document.getElementById(id)?.classList.add('active'), 10);
+  setTimeout(() => $(id)?.classList.add('active'), 10);
 }
 window.show = show;
 
 function setLoading(text, visible = true) {
-  const el = document.getElementById('loadingScreen');
-  const tx = document.getElementById('loadingText');
-  if (tx) tx.textContent = text;
-  el.classList.toggle('hidden', !visible);
+  $('loadingText').textContent = text;
+  $('loadingScreen').classList.toggle('hidden', !visible);
 }
 
-/* ── FIREBASE CONNECT ── */
-function parseFirebaseConfig(raw) {
-  let s = raw.replace(/\/\/[^\n]*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
-  const start = s.indexOf("{"); const end = s.lastIndexOf("}");
-  if (start === -1 || end === -1) throw new Error("설정 객체를 찾을 수 없어요");
-  s = s.slice(start, end + 1);
-  s = s.replace(/,\s*([\}\]])/g, "$1");
-  s = s.replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, "$1\"$2\":");
-  s = s.replace(/:\s*'([^']*)'/g, ": \"$1\"");
-  return JSON.parse(s);
-}
-
-async function connectFirebase(config) {
+/* ── FIREBASE INIT ── */
+async function initFirebase() {
   setLoading('Firebase 연결 중...');
   try {
-    const app = initializeApp(config);
+    const app = initializeApp(FIREBASE_CONFIG);
     db = getDatabase(app);
-
     setLoading('데이터 불러오는 중...');
     await loadConfig();
-
     listenConfig();
+    listenParticipants();
     listenCompleted();
-
     setLoading('', false);
     show('s-start');
-    showToast('🔥 Firebase 연결 성공!');
   } catch(e) {
     setLoading('', false);
     console.error(e);
     alert('Firebase 연결 실패: ' + e.message);
   }
 }
-window.connectFirebase = connectFirebase;
 
 /* ── FIREBASE: CONFIG ── */
 async function loadConfig() {
@@ -410,21 +381,28 @@ async function loadConfig() {
 }
 
 function applyConfig(d) {
-  if (d.booths?.length) booths = d.booths;
+  if (d.booths?.length) booths = d.booths.map(b => ({ required: false, ...b }));
   if (d.eventName) eventName = d.eventName;
   if (d.adminPw) adminPw = d.adminPw;
-  document.getElementById('startLogo').textContent = '🎪 ' + eventName;
+  $('startLogo').textContent = '🎪 ' + eventName;
 }
 
 function listenConfig() {
   onValue(ref(db, 'config'), snap => {
     if (!snap.exists()) return;
     applyConfig(snap.val());
-    if (document.getElementById('s-card').classList.contains('active')) renderCard();
+    if ($('s-card').classList.contains('active')) renderCard();
   });
 }
 
 async function saveConfigToFB() {
+  // 현재 입력된 부스 이름/비번을 직접 DOM에서 읽어서 저장 (버그 수정)
+  const rows = document.querySelectorAll('#adminBoothList .admin-booth-item');
+  rows.forEach((row, i) => {
+    const inputs = row.querySelectorAll('input[type=text]');
+    if (inputs[0]) booths[i].name = inputs[0].value.trim() || booths[i].name;
+    if (inputs[1]) booths[i].pw = inputs[1].value.trim() || booths[i].pw;
+  });
   await set(ref(db, 'config'), { booths, eventName, adminPw });
 }
 
@@ -442,16 +420,71 @@ async function saveStamps(name, arr) {
   await set(ref(db, `stamps/${safeKey(name)}`), { name, stamps: arr, updatedAt: Date.now() });
 }
 
-/* ── FIREBASE: COMPLETED ── */
-async function addCompleted(name) {
+/* ── FIREBASE: PARTICIPANTS ── */
+async function registerParticipant(p) {
   if (!db) return;
-  await push(ref(db, 'completed'), { name, completedAt: Date.now(), boothCount: booths.length });
+  const key = safeKey(p.name + '_' + p.school);
+  await set(ref(db, `participants/${key}`), {
+    name: p.name, school: p.school, grade: p.grade,
+    registeredAt: Date.now()
+  });
+}
+
+function listenParticipants() {
+  onValue(ref(db, 'participants'), snap => {
+    const list = $('participantList');
+    const cnt = $('participantCount');
+    if (!snap.exists()) {
+      list.innerHTML = '<div class="empty-state">아직 참가자가 없어요</div>';
+      if (cnt) cnt.textContent = '0명';
+      return;
+    }
+    const rows = [];
+    snap.forEach(c => rows.push(c.val()));
+    rows.sort((a, b) => a.name.localeCompare(b.name));
+    if (cnt) cnt.textContent = rows.length + '명';
+    list.innerHTML = rows.map(r => `
+      <div class="list-item">
+        <div>
+          <div class="li-main">${r.name}</div>
+          <div class="li-sub">${r.school || ''} ${r.grade || ''}</div>
+        </div>
+        <div class="badge-muted">${new Date(r.registeredAt).toLocaleDateString('ko')}</div>
+      </div>`).join('');
+    // CSV용 캐시
+    window._participantsCache = rows;
+  });
+}
+
+window.clearParticipants = async function() {
+  if (!confirm('참가자 명단을 모두 지울까요?')) return;
+  await remove(ref(db, 'participants'));
+  showToast('참가자 명단이 초기화됐어요');
+};
+
+window.downloadParticipantsCSV = function() {
+  const rows = window._participantsCache || [];
+  if (!rows.length) return showToast('참가자가 없어요', true);
+  const bom = '\uFEFF';
+  const header = '이름,학교,학년,등록일시\n';
+  const body = rows.map(r => `${r.name},${r.school||''},${r.grade||''},${new Date(r.registeredAt).toLocaleString('ko')}`).join('\n');
+  downloadCSV(bom + header + body, '참가자_명단.csv');
+};
+
+/* ── FIREBASE: COMPLETED ── */
+async function addCompleted(p, stampArr) {
+  if (!db) return;
+  await push(ref(db, 'completed'), {
+    name: p.name, school: p.school, grade: p.grade,
+    boothCount: booths.length, stamps: stampArr,
+    completedAt: Date.now()
+  });
 }
 
 function listenCompleted() {
   onValue(ref(db, 'completed'), snap => {
-    const list = document.getElementById('completedList');
-    const cnt = document.getElementById('completedCount');
+    const list = $('completedList');
+    const cnt = $('completedCount');
     if (!snap.exists()) {
       list.innerHTML = '<div class="empty-state">아직 완료한 참여자가 없어요</div>';
       if (cnt) cnt.textContent = '0명';
@@ -464,11 +497,15 @@ function listenCompleted() {
     list.innerHTML = rows.map(r => {
       const d = new Date(r.completedAt);
       const t = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-      return `<div class="completed-item">
-        <div><div class="c-name">${r.name}</div><div class="c-time">${t} · ${r.boothCount}개 부스</div></div>
-        <div class="c-badge">완료 ✓</div>
+      return `<div class="list-item">
+        <div>
+          <div class="li-main">${r.name}</div>
+          <div class="li-sub">${r.school||''} ${r.grade||''} · ${t}</div>
+        </div>
+        <div class="badge-green">완료 ✓</div>
       </div>`;
     }).join('');
+    window._completedCache = rows;
   });
 }
 
@@ -478,78 +515,113 @@ window.clearCompleted = async function() {
   showToast('명단이 초기화됐어요');
 };
 
+window.downloadCompletedCSV = function() {
+  const rows = window._completedCache || [];
+  if (!rows.length) return showToast('완료자가 없어요', true);
+  const bom = '\uFEFF';
+  const header = '이름,학교,학년,완료일시,부스수\n';
+  const body = rows.map(r => `${r.name},${r.school||''},${r.grade||''},${new Date(r.completedAt).toLocaleString('ko')},${r.boothCount}`).join('\n');
+  downloadCSV(bom + header + body, '완료자_명단.csv');
+};
+
+function downloadCSV(content, filename) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8;' }));
+  a.download = filename;
+  a.click();
+}
+
 /* ── ADMIN ── */
 function renderAdmin() {
-  const list = document.getElementById('adminBoothList');
+  const list = $('adminBoothList');
   list.innerHTML = '';
   booths.forEach((b, i) => {
     const row = document.createElement('div');
     row.className = 'admin-booth-item';
     row.innerHTML = `
       <button class="emoji-btn" onclick="openEmojiPicker(event,${i})">${b.emoji}</button>
-      <input type="text" value="${b.name}" placeholder="부스 이름" oninput="booths[${i}].name=this.value">
-      <input type="text" class="pw-field" value="${b.pw}" placeholder="비번" oninput="booths[${i}].pw=this.value">
-      <button onclick="removeBooth(${i})" style="background:rgba(224,85,128,0.15);border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;color:#e05580;font-size:16px;flex-shrink:0">✕</button>
+      <input type="text" value="${b.name}" placeholder="부스 이름">
+      <input type="text" class="pw-field" value="${b.pw}" placeholder="비번">
+      <button class="required-toggle ${b.required ? 'on' : ''}" title="필수 부스" onclick="toggleRequired(${i},this)">★</button>
+      <button onclick="removeBooth(${i})" style="background:rgba(224,85,128,.15);border:none;border-radius:8px;width:30px;height:30px;cursor:pointer;color:var(--red);font-size:15px;flex-shrink:0">✕</button>
     `;
     list.appendChild(row);
   });
 }
 window.renderAdmin = renderAdmin;
 
+window.toggleRequired = (i, btn) => {
+  booths[i].required = !booths[i].required;
+  btn.classList.toggle('on', booths[i].required);
+};
+
 window.addBooth = () => {
-  booths.push({ name: `부스 ${booths.length + 1}`, pw: '1234', emoji: EMOJIS[booths.length % EMOJIS.length] });
+  booths.push({ name: `부스 ${booths.length + 1}`, pw: '1234', emoji: EMOJIS[booths.length % EMOJIS.length], required: false });
   renderAdmin();
 };
-window.removeBooth = (i) => {
+
+window.removeBooth = i => {
   if (booths.length <= 1) return showToast('부스는 최소 1개 필요해요', true);
   booths.splice(i, 1); renderAdmin();
 };
 
 window.saveAdmin = async () => {
-  if (booths.some(b => !b.name.trim())) return showToast('부스 이름을 입력해주세요', true);
-  if (booths.some(b => !b.pw.trim())) return showToast('모든 부스 비밀번호를 설정해주세요', true);
-  eventName = document.getElementById('eventName').value.trim() || '스탬프 랠리';
-  document.getElementById('startLogo').textContent = '🎪 ' + eventName;
-  const np = document.getElementById('newAdminPw').value.trim();
+  // DOM에서 직접 읽어서 booths 배열 동기화 (부스명 변경 버그 수정)
+  const rows = document.querySelectorAll('#adminBoothList .admin-booth-item');
+  let valid = true;
+  rows.forEach((row, i) => {
+    const inputs = row.querySelectorAll('input');
+    const name = inputs[0]?.value.trim();
+    const pw = inputs[1]?.value.trim();
+    if (!name || !pw) { valid = false; return; }
+    booths[i].name = name;
+    booths[i].pw = pw;
+  });
+  if (!valid) return showToast('부스 이름과 비밀번호를 모두 입력해주세요', true);
+
+  eventName = $('eventName').value.trim() || '스탬프 랠리';
+  $('startLogo').textContent = '🎪 ' + eventName;
+  const np = $('newAdminPw').value.trim();
   if (np) adminPw = np;
-  document.getElementById('newAdminPw').value = '';
+  $('newAdminPw').value = '';
+
   setLoading('저장 중...');
-  await saveConfigToFB();
+  await set(ref(db, 'config'), { booths, eventName, adminPw });
   setLoading('', false);
   showToast('☁️ 모든 기기에 즉시 반영됐어요!');
 };
 
 window.openAdminModal = () => {
-  document.getElementById('adminPwInput').value = '';
-  document.getElementById('adminPwError').textContent = '';
-  document.getElementById('adminModal').classList.add('open');
-  setTimeout(() => document.getElementById('adminPwInput').focus(), 300);
+  $('adminPwInput').value = '';
+  $('adminPwError').textContent = '';
+  $('adminModal').classList.add('open');
+  setTimeout(() => $('adminPwInput').focus(), 300);
 };
-window.closeAdminModal = () => document.getElementById('adminModal').classList.remove('open');
+window.closeAdminModal = () => $('adminModal').classList.remove('open');
 window.checkAdminPw = () => {
-  const v = document.getElementById('adminPwInput').value;
+  const v = $('adminPwInput').value;
   if (v === adminPw) {
     closeAdminModal(); renderAdmin();
-    document.getElementById('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
+    $('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
     show('s-admin');
   } else {
-    document.getElementById('adminPwError').textContent = '비밀번호가 틀렸어요.';
-    document.getElementById('adminPwInput').value = '';
-    document.getElementById('adminPwInput').focus();
+    $('adminPwError').textContent = '비밀번호가 틀렸어요.';
+    $('adminPwInput').value = '';
+    $('adminPwInput').focus();
   }
 };
 
 window.switchTab = (tabId, btn) => {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
+  $(tabId).classList.add('active');
   btn.classList.add('active');
 };
 
 /* ── EMOJI PICKER ── */
 window.openEmojiPicker = (e, idx) => {
   emojiTarget = idx;
-  const pk = document.getElementById('emojiPicker');
+  const pk = $('emojiPicker');
   pk.innerHTML = EMOJIS.map(em => `<span onclick="pickEmoji('${em}')">${em}</span>`).join('');
   pk.style.display = 'grid';
   const r = e.target.getBoundingClientRect();
@@ -557,25 +629,37 @@ window.openEmojiPicker = (e, idx) => {
   pk.style.left = Math.min(r.left, window.innerWidth - 220) + 'px';
   e.stopPropagation();
 };
-window.pickEmoji = (em) => {
+window.pickEmoji = em => {
   if (emojiTarget !== null) { booths[emojiTarget].emoji = em; renderAdmin(); }
-  document.getElementById('emojiPicker').style.display = 'none';
+  $('emojiPicker').style.display = 'none';
   emojiTarget = null;
 };
-document.addEventListener('click', () => { document.getElementById('emojiPicker').style.display = 'none'; });
+document.addEventListener('click', () => { $('emojiPicker').style.display = 'none'; });
 
-/* ── RALLY ── */
+/* ── RALLY START ── */
 window.startRally = async () => {
-  const name = document.getElementById('participantName').value.trim();
-  if (!name) { document.getElementById('participantName').focus(); return showToast('이름을 입력해주세요 😊', true); }
-  participant = name;
+  const name = $('inputName').value.trim();
+  const school = $('inputSchool').value.trim();
+  const grade = $('inputGrade').value.trim();
+  if (!name) { $('inputName').focus(); return showToast('이름을 입력해주세요 😊', true); }
+  if (!school) { $('inputSchool').focus(); return showToast('학교를 입력해주세요', true); }
+  if (!grade) { $('inputGrade').focus(); return showToast('학년을 입력해주세요', true); }
+
+  participant = { name, school, grade };
+
   setLoading('스탬프 불러오는 중...');
   const saved = await loadStamps(name);
   setLoading('', false);
+
   stamps = saved && saved.length > 0 ? saved : [];
+
+  // 참가자 등록 (중복 무시)
+  await registerParticipant(participant);
+
   renderCard();
   show('s-card');
   if (saved && saved.length > 0) showToast(`${name} 님, 이어서 진행해요! (${stamps.length}/${booths.length})`);
+
   if (window._pendingBooth !== undefined) {
     const idx = window._pendingBooth; delete window._pendingBooth;
     setTimeout(() => openBooth(idx), 400);
@@ -583,22 +667,28 @@ window.startRally = async () => {
 };
 
 window.goStart = () => {
-  document.getElementById('participantName').value = '';
+  $('inputName').value = '';
+  $('inputSchool').value = '';
+  $('inputGrade').value = '';
   show('s-start');
 };
 
 /* ── STAMP CARD ── */
 function renderCard() {
-  document.getElementById('cardNameBadge').textContent = participant + ' 님';
-  const grid = document.getElementById('stampGrid');
+  $('cardNameBadge').textContent = participant.name + ' 님';
+  const grid = $('stampGrid');
   const cols = booths.length <= 4 ? 2 : booths.length <= 9 ? 3 : 4;
   grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
   grid.innerHTML = '';
+
+  const hasRequired = booths.some(b => b.required);
+  $('requiredNotice').style.display = hasRequired ? 'block' : 'none';
+
   booths.forEach((b, i) => {
     const earned = stamps.includes(i);
     const c = COLORS[i % COLORS.length];
     const cell = document.createElement('div');
-    cell.className = 'stamp-cell' + (earned ? ' earned' : '');
+    cell.className = 'stamp-cell' + (earned ? ' earned' : '') + (b.required ? ' required-cell' : '');
     cell.id = `cell-${i}`;
     cell.style.borderColor = earned ? c + '50' : '';
     cell.innerHTML = `
@@ -610,8 +700,8 @@ function renderCard() {
     grid.appendChild(cell);
   });
   const done = stamps.length, total = booths.length;
-  document.getElementById('stampProgress').style.width = (done / total * 100) + '%';
-  document.getElementById('stampCount').textContent = `${done}/${total}`;
+  $('stampProgress').style.width = (done / total * 100) + '%';
+  $('stampCount').textContent = `${done}/${total}`;
 }
 
 /* ── BOOTH ── */
@@ -619,32 +709,45 @@ function openBooth(i) {
   if (stamps.includes(i)) return showToast('이미 스탬프를 받았어요! ✓');
   currentBooth = i;
   const b = booths[i]; const c = COLORS[i % COLORS.length];
-  const badge = document.getElementById('boothBadge');
+  const badge = $('boothBadge');
   badge.textContent = b.emoji; badge.style.background = c + '22'; badge.style.borderColor = c + '60';
-  document.getElementById('boothTitle').textContent = b.name;
-  document.getElementById('boothTitle').style.color = c;
-  document.getElementById('boothPwInput').value = '';
-  document.getElementById('boothError').textContent = '';
+  $('boothTitle').textContent = b.name;
+  $('boothTitle').style.color = c;
+  const rb = $('boothRequiredBadge');
+  rb.style.display = b.required ? 'block' : 'none';
+  $('boothPwInput').value = '';
+  $('boothError').textContent = '';
   show('s-booth');
-  setTimeout(() => document.getElementById('boothPwInput').focus(), 400);
+  setTimeout(() => $('boothPwInput').focus(), 400);
 }
 
 window.tryStamp = async () => {
-  const input = document.getElementById('boothPwInput').value;
+  const input = $('boothPwInput').value;
   const b = booths[currentBooth];
   if (input === b.pw) {
     stamps.push(currentBooth);
-    await saveStamps(participant, stamps);
+    await saveStamps(participant.name, stamps);
     renderCard();
-    const cell = document.getElementById(`cell-${currentBooth}`);
-    if (cell) { setTimeout(() => cell.classList.add('just-stamped'), 100); setTimeout(() => cell.classList.remove('just-stamped'), 700); }
+    const cell = $(`cell-${currentBooth}`);
+    if (cell) {
+      setTimeout(() => cell.classList.add('just-stamped'), 100);
+      setTimeout(() => cell.classList.remove('just-stamped'), 700);
+    }
     show('s-card');
     showToast(`${b.emoji} ${b.name} 스탬프 획득!`);
-    if (stamps.length === booths.length) setTimeout(showComplete, 900);
+
+    // 필수 부스 포함 완료 체크
+    const requiredAll = booths.every((b, i) => !b.required || stamps.includes(i));
+    const allDone = stamps.length === booths.length;
+    if (allDone || (requiredAll && booths.some(b => b.required) && stamps.length === booths.length)) {
+      setTimeout(showComplete, 900);
+    } else if (allDone) {
+      setTimeout(showComplete, 900);
+    }
   } else {
-    document.getElementById('boothError').textContent = '비밀번호가 틀렸어요. 다시 확인해주세요.';
-    document.getElementById('boothPwInput').value = '';
-    document.getElementById('boothPwInput').focus();
+    $('boothError').textContent = '비밀번호가 틀렸어요. 다시 확인해주세요.';
+    $('boothPwInput').value = '';
+    $('boothPwInput').focus();
     const card = document.querySelector('#s-booth .card');
     card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'shake 0.4s';
   }
@@ -654,17 +757,16 @@ window.backToCard = () => { currentBooth = null; show('s-card'); };
 
 /* ── COMPLETE ── */
 async function showComplete() {
-  document.getElementById('completeSub').innerHTML =
-    `<strong style="color:var(--accent)">${participant}</strong> 님, 모든 스탬프를 모았어요! 🎉<br>운영진에게 이 화면을 보여주세요.`;
-  document.getElementById('completeStamps').innerHTML = booths.map((b, i) => {
+  $('completeSub').innerHTML = `<strong style="color:var(--accent)">${participant.name}</strong> 님, 모든 스탬프를 모았어요! 🎉<br>운영진에게 이 화면을 보여주세요.`;
+  $('completeStamps').innerHTML = booths.map((b, i) => {
     const c = COLORS[i % COLORS.length];
-    return `<div style="width:48px;height:48px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:22px">${b.emoji}</div>`;
+    return `<div style="width:46px;height:46px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:20px">${b.emoji}</div>`;
   }).join('');
-  await addCompleted(participant);
+  await addCompleted(participant, stamps);
   show('s-complete');
 }
 
-/* ── SHAKE ── */
+/* ── ANIMATIONS ── */
 const ss = document.createElement('style');
 ss.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}`;
 document.head.appendChild(ss);
@@ -675,10 +777,7 @@ const bp = up.get('booth');
 if (bp !== null) { const i = parseInt(bp) - 1; if (!isNaN(i)) window._pendingBooth = i; }
 
 /* ── INIT ── */
-(async () => {
-  setLoading('Firebase 연결 중...');
-  await connectFirebase(FIREBASE_CONFIG);
-})();
+initFirebase();
 </script>
 </body>
 </html>
