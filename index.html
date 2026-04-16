@@ -7,542 +7,231 @@
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1923;
-    --card: #1a2634;
-    --card2: #1f2e40;
-    --accent: #f0c040;
-    --accent2: #e07b30;
-    --green: #3ecf72;
-    --text: #eef2f7;
-    --muted: #7a90a8;
-    --stamp-colors: #f0c040, #e07b30, #3ecf72, #e05580, #7b6cf0, #40c0cf, #cf7b40, #cf40a0;
-    --radius: 16px;
+    --bg: #0f1923; --card: #1a2634; --card2: #1f2e40;
+    --accent: #f0c040; --accent2: #e07b30; --green: #3ecf72;
+    --text: #eef2f7; --muted: #7a90a8; --radius: 16px;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 60% 50% at 20% 10%, rgba(240,192,64,0.07) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 80% 90%, rgba(62,207,114,0.06) 0%, transparent 70%); pointer-events: none; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans KR', sans-serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
+  .screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px 20px; opacity: 0; pointer-events: none; transform: translateY(24px); transition: opacity 0.35s, transform 0.35s; overflow-y: auto; }
+  .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+  .screen-inner { width: 100%; max-width: 420px; }
 
-  /* ── SCREENS ── */
-  .screen {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    padding: 24px 20px;
-    opacity: 0; pointer-events: none;
-    transform: translateY(24px);
-    transition: opacity 0.35s, transform 0.35s;
-    overflow-y: auto;
-  }
-  .screen.active {
-    opacity: 1; pointer-events: all; transform: translateY(0);
-  }
-  .screen-inner {
-    width: 100%; max-width: 420px;
-  }
+  .logo { font-family: 'Jua', sans-serif; font-size: 34px; color: var(--accent); text-align: center; letter-spacing: 2px; margin-bottom: 6px; text-shadow: 0 0 40px rgba(240,192,64,0.4); }
+  .subtitle { text-align: center; font-size: 13px; color: var(--muted); margin-bottom: 28px; letter-spacing: 1px; }
+  .card { background: var(--card); border-radius: var(--radius); padding: 24px 20px; border: 1px solid rgba(255,255,255,0.07); box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
 
-  /* ── BACKGROUND DECORATION ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(240,192,64,0.07) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 60% at 80% 90%, rgba(62,207,114,0.06) 0%, transparent 70%);
-    pointer-events: none;
-  }
+  .field-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; font-weight: 700; text-transform: uppercase; }
+  input[type="text"], input[type="password"] { width: 100%; background: var(--bg); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-family: 'Noto Sans KR', sans-serif; font-size: 16px; padding: 13px 16px; outline: none; transition: border-color 0.2s; }
+  input:focus { border-color: var(--accent); }
+  textarea { width: 100%; background: var(--bg); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; color: var(--text); font-family: monospace; font-size: 12px; padding: 12px 14px; outline: none; resize: vertical; min-height: 150px; line-height: 1.6; transition: border-color 0.2s; }
+  textarea:focus { border-color: var(--accent); }
 
-  /* ── LOGO / TITLE ── */
-  .logo {
-    font-family: 'Jua', sans-serif;
-    font-size: 36px;
-    color: var(--accent);
-    text-align: center;
-    letter-spacing: 2px;
-    margin-bottom: 6px;
-    text-shadow: 0 0 40px rgba(240,192,64,0.4);
-  }
-  .subtitle {
-    text-align: center;
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 32px;
-    letter-spacing: 1px;
-  }
-
-  /* ── CARD ── */
-  .card {
-    background: var(--card);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    border: 1px solid rgba(255,255,255,0.07);
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
-  }
-
-  /* ── INPUT ── */
-  .field-label {
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-  input[type="text"], input[type="password"] {
-    width: 100%;
-    background: var(--bg);
-    border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Noto Sans KR', sans-serif;
-    font-size: 17px;
-    padding: 14px 16px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  input:focus {
-    border-color: var(--accent);
-  }
-
-  /* ── BUTTON ── */
-  .btn {
-    width: 100%;
-    padding: 16px;
-    border-radius: 12px;
-    border: none;
-    font-family: 'Jua', sans-serif;
-    font-size: 18px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
-    margin-top: 16px;
-  }
+  .btn { width: 100%; padding: 15px; border-radius: 12px; border: none; font-family: 'Jua', sans-serif; font-size: 17px; letter-spacing: 1px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; margin-top: 14px; }
   .btn:active { transform: scale(0.97); }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #1a1400;
-    box-shadow: 0 4px 20px rgba(240,192,64,0.3);
-  }
-  .btn-primary:hover { box-shadow: 0 6px 28px rgba(240,192,64,0.45); }
-  .btn-ghost {
-    background: rgba(255,255,255,0.06);
-    color: var(--muted);
-    margin-top: 10px;
-  }
-  .btn-green {
-    background: linear-gradient(135deg, var(--green), #2aaa58);
-    color: #0a2018;
-    box-shadow: 0 4px 20px rgba(62,207,114,0.3);
-    margin-top: 24px;
-  }
-  .btn-danger {
-    background: rgba(224,85,128,0.15);
-    color: #e05580;
-    border: 1px solid rgba(224,85,128,0.3);
-    margin-top: 8px;
-  }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #1a1400; box-shadow: 0 4px 20px rgba(240,192,64,0.3); }
+  .btn-ghost { background: rgba(255,255,255,0.06); color: var(--muted); }
+  .btn-green { background: linear-gradient(135deg, var(--green), #2aaa58); color: #0a2018; box-shadow: 0 4px 20px rgba(62,207,114,0.3); margin-top: 20px; }
+  .btn-danger { background: rgba(224,85,128,0.1); color: #e05580; border: 1px solid rgba(224,85,128,0.25); }
+  .admin-btn { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px; padding: 13px 20px; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 12px; color: var(--muted); font-family: 'Jua', sans-serif; font-size: 15px; cursor: pointer; width: 100%; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+  .admin-btn:hover { background: rgba(240,192,64,0.08); border-color: rgba(240,192,64,0.3); color: var(--accent); }
 
-  /* ── STAMP GRID ── */
-  .stamp-grid {
-    display: grid;
-    gap: 12px;
-    margin: 20px 0;
-  }
-  .stamp-cell {
-    aspect-ratio: 1;
-    border-radius: 14px;
-    border: 2px dashed rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.03);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: border-color 0.3s;
-    overflow: hidden;
-    cursor: default;
-  }
-  .stamp-cell.earned {
-    border-style: solid;
-    border-color: transparent;
-  }
-  .stamp-cell-num {
-    font-family: 'Jua', sans-serif;
-    font-size: 11px;
-    color: rgba(255,255,255,0.2);
-    position: absolute;
-    top: 6px; left: 10px;
-  }
-  .stamp-cell-name {
-    font-size: 10px;
-    color: rgba(255,255,255,0.25);
-    text-align: center;
-    padding: 0 4px;
-    line-height: 1.3;
-  }
+  /* setup steps */
+  .setup-step { display: flex; gap: 12px; margin-bottom: 16px; }
+  .step-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(240,192,64,0.12); border: 1.5px solid rgba(240,192,64,0.35); color: var(--accent); font-family: 'Jua', sans-serif; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .step-text strong { color: var(--text); }
+  .step-text a { color: var(--accent); text-decoration: none; }
+  .code-hint { background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.07); padding: 10px 12px; font-family: monospace; font-size: 11px; color: #5ab; line-height: 1.7; margin-top: 8px; white-space: pre-wrap; word-break: break-all; }
+
+  /* tabs */
+  .tab-bar { display: flex; gap: 4px; background: var(--bg); border-radius: 10px; padding: 4px; margin-bottom: 16px; }
+  .tab-btn { flex: 1; padding: 9px; border: none; border-radius: 8px; background: transparent; color: var(--muted); font-family: 'Jua', sans-serif; font-size: 13px; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .tab-btn.active { background: var(--card2); color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* admin booth list */
+  .admin-booth-list { display: flex; flex-direction: column; gap: 7px; margin: 12px 0; max-height: 38vh; overflow-y: auto; }
+  .admin-booth-item { display: flex; align-items: center; gap: 7px; background: var(--bg); border-radius: 10px; padding: 7px 9px; }
+  .admin-booth-item input[type="text"] { flex: 1; font-size: 13px; padding: 7px 10px; }
+  .admin-booth-item .pw-field { width: 76px; font-size: 13px; padding: 7px 9px; }
+  .emoji-btn { width: 38px; height: 38px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 19px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .add-booth-btn { background: rgba(240,192,64,0.08); border: 1.5px dashed rgba(240,192,64,0.35); border-radius: 10px; color: var(--accent); font-family: 'Jua', sans-serif; font-size: 14px; padding: 11px; cursor: pointer; width: 100%; transition: background 0.2s; }
+  .add-booth-btn:hover { background: rgba(240,192,64,0.16); }
+  .section-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 18px 0; }
+
+  /* completed list */
+  .completed-list { max-height: 48vh; overflow-y: auto; margin-top: 10px; }
+  .completed-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 10px; background: var(--bg); margin-bottom: 6px; }
+  .c-name { font-weight: 700; font-size: 14px; color: var(--text); }
+  .c-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .c-badge { background: rgba(62,207,114,0.12); border: 1px solid rgba(62,207,114,0.28); border-radius: 20px; color: var(--green); font-size: 11px; padding: 3px 10px; font-family: 'Jua', sans-serif; white-space: nowrap; }
+  .empty-state { text-align: center; color: var(--muted); font-size: 13px; padding: 28px; }
+
+  /* stamp grid */
+  .stamp-grid { display: grid; gap: 10px; margin: 18px 0; }
+  .stamp-cell { aspect-ratio: 1; border-radius: 13px; border: 2px dashed rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; transition: border-color 0.3s; overflow: hidden; cursor: pointer; }
+  .stamp-cell.earned { border-style: solid; border-color: transparent; }
+  .stamp-cell-num { font-family: 'Jua', sans-serif; font-size: 11px; color: rgba(255,255,255,0.2); position: absolute; top: 5px; left: 8px; }
+  .stamp-cell-name { font-size: 10px; color: rgba(255,255,255,0.25); text-align: center; padding: 0 4px; line-height: 1.3; }
   .stamp-cell.earned .stamp-cell-name { display: none; }
+  .stamp-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; opacity: 0; transform: scale(0) rotate(-30deg); position: relative; }
+  .stamp-cell.earned .stamp-icon { opacity: 1; transform: scale(1) rotate(-8deg); transition: opacity 0.4s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.4); }
+  .stamp-cell.just-stamped .stamp-icon { animation: stampPop 0.5s cubic-bezier(0.175,0.885,0.32,1.4) forwards; }
+  @keyframes stampPop { 0% { transform: scale(2.2) rotate(-30deg); opacity: 0; } 60% { transform: scale(0.88) rotate(-6deg); opacity: 1; } 80% { transform: scale(1.1) rotate(-10deg); opacity: 1; } 100% { transform: scale(1) rotate(-8deg); opacity: 1; } }
+  .stamp-icon::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid currentColor; opacity: 0.35; }
 
-  /* ── STAMP ICON ── */
-  .stamp-icon {
-    width: 56px; height: 56px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    opacity: 0;
-    transform: scale(0) rotate(-30deg);
-    transition: opacity 0.01s, transform 0.01s;
-    position: relative;
-  }
-  .stamp-cell.earned .stamp-icon {
-    opacity: 1;
-    transform: scale(1) rotate(-8deg);
-    transition: opacity 0.4s, transform 0.4s cubic-bezier(0.175,0.885,0.32,1.4);
-  }
-  .stamp-cell.just-stamped .stamp-icon {
-    animation: stampPop 0.5s cubic-bezier(0.175,0.885,0.32,1.4) forwards;
-  }
-  @keyframes stampPop {
-    0%   { transform: scale(2.2) rotate(-30deg); opacity:0; }
-    60%  { transform: scale(0.88) rotate(-6deg);  opacity:1; }
-    80%  { transform: scale(1.1)  rotate(-10deg); opacity:1; }
-    100% { transform: scale(1)    rotate(-8deg);  opacity:1; }
-  }
-  .stamp-icon::after {
-    content: '';
-    position: absolute; inset: -4px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-    opacity: 0.35;
-  }
+  .progress-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .progress-track { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+  .progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--green)); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+  .progress-label { font-family: 'Jua', sans-serif; font-size: 13px; color: var(--accent); white-space: nowrap; }
 
-  /* ── PROGRESS ── */
-  .progress-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 6px;
-  }
-  .progress-track {
-    flex: 1;
-    height: 6px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), var(--green));
-    border-radius: 3px;
-    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
-    width: 0%;
-  }
-  .progress-label {
-    font-family: 'Jua', sans-serif;
-    font-size: 13px;
-    color: var(--accent);
-    white-space: nowrap;
-  }
+  .complete-badge { width: 110px; height: 110px; border-radius: 50%; background: radial-gradient(circle, rgba(240,192,64,0.2), rgba(62,207,114,0.1)); border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 48px; animation: glow 2s ease-in-out infinite alternate; box-shadow: 0 0 40px rgba(240,192,64,0.3); }
+  @keyframes glow { from { box-shadow: 0 0 20px rgba(240,192,64,0.2); } to { box-shadow: 0 0 60px rgba(240,192,64,0.5); } }
+  .complete-title { font-family: 'Jua', sans-serif; font-size: 28px; text-align: center; color: var(--accent); margin-bottom: 8px; }
+  .complete-sub { text-align: center; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
-  /* ── COMPLETE SCREEN ── */
-  .complete-badge {
-    width: 120px; height: 120px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(240,192,64,0.2), rgba(62,207,114,0.1));
-    border: 3px solid var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 24px;
-    font-size: 52px;
-    animation: glow 2s ease-in-out infinite alternate;
-    box-shadow: 0 0 40px rgba(240,192,64,0.3);
-  }
-  @keyframes glow {
-    from { box-shadow: 0 0 20px rgba(240,192,64,0.2); }
-    to   { box-shadow: 0 0 60px rgba(240,192,64,0.5); }
-  }
-  .complete-title {
-    font-family: 'Jua', sans-serif;
-    font-size: 30px;
-    text-align: center;
-    color: var(--accent);
-    margin-bottom: 8px;
-  }
-  .complete-sub {
-    text-align: center;
-    color: var(--muted);
-    font-size: 14px;
-    line-height: 1.6;
-  }
+  .booth-badge { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 12px; border: 2px solid rgba(255,255,255,0.15); }
+  .booth-title { font-family: 'Jua', sans-serif; font-size: 21px; text-align: center; margin-bottom: 4px; }
+  .booth-sub { text-align: center; color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .error-msg { color: #e05580; font-size: 13px; text-align: center; margin-top: 10px; min-height: 18px; }
 
-  /* ── BOOTH STAMP SCREEN ── */
-  .booth-badge {
-    width: 72px; height: 72px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 30px;
-    margin: 0 auto 12px;
-    border: 2px solid rgba(255,255,255,0.15);
-  }
-  .booth-title {
-    font-family: 'Jua', sans-serif;
-    font-size: 22px;
-    text-align: center;
-    margin-bottom: 4px;
-  }
-  .booth-sub {
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    margin-bottom: 24px;
-  }
-
-  /* ── ERROR ── */
-  .error-msg {
-    color: #e05580;
-    font-size: 13px;
-    text-align: center;
-    margin-top: 10px;
-    min-height: 18px;
-  }
-
-  /* ── ADMIN BUTTON ── */
-  .admin-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 16px;
-    padding: 13px 20px;
-    background: rgba(255,255,255,0.05);
-    border: 1.5px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    color: var(--muted);
-    font-family: 'Jua', sans-serif;
-    font-size: 15px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-  }
-  .admin-btn:hover {
-    background: rgba(240,192,64,0.08);
-    border-color: rgba(240,192,64,0.3);
-    color: var(--accent);
-  }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center;
-    padding: 24px;
-    z-index: 500;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s;
-  }
-  .modal-overlay.open {
-    opacity: 1; pointer-events: all;
-  }
-  .modal-box {
-    background: var(--card2);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
-    padding: 28px 24px;
-    width: 100%; max-width: 340px;
-    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
-    transform: scale(0.95);
-    transition: transform 0.25s;
-  }
-  .modal-overlay.open .modal-box { transform: scale(1); }
-  .modal-title {
-    font-family: 'Jua', sans-serif;
-    font-size: 18px;
-    color: var(--accent);
-    margin-bottom: 6px;
-  }
-  .modal-sub {
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
-
-  .admin-booth-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: 16px 0;
-    max-height: 50vh;
-    overflow-y: auto;
-  }
-  .admin-booth-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--bg);
-    border-radius: 10px;
-    padding: 10px 14px;
-  }
-  .admin-booth-item input[type="text"] {
-    flex: 1;
-    font-size: 14px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.05);
-  }
-  .admin-booth-item .pw-field {
-    width: 90px;
-    font-size: 14px;
-    padding: 8px 10px;
-    background: rgba(255,255,255,0.05);
-  }
-  .admin-booth-item .emoji-btn {
-    width: 40px; height: 40px;
-    border-radius: 8px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    cursor: pointer;
-    font-size: 20px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .add-booth-btn {
-    background: rgba(240,192,64,0.1);
-    border: 1.5px dashed rgba(240,192,64,0.4);
-    border-radius: 10px;
-    color: var(--accent);
-    font-family: 'Jua', sans-serif;
-    font-size: 15px;
-    padding: 12px;
-    cursor: pointer;
-    width: 100%;
-    transition: background 0.2s;
-  }
-  .add-booth-btn:hover { background: rgba(240,192,64,0.18); }
-
-  .section-divider {
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.07);
-    margin: 20px 0;
-  }
-
-  /* ── NAME BADGE ── */
-  .name-badge {
-    display: inline-block;
-    background: rgba(240,192,64,0.12);
-    border: 1px solid rgba(240,192,64,0.3);
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-family: 'Jua', sans-serif;
-    font-size: 15px;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-
-  /* ── QR HINT ── */
-  .qr-hint {
-    background: rgba(255,255,255,0.04);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-top: 16px;
-    border: 1px solid rgba(255,255,255,0.06);
-  }
+  .name-badge { display: inline-block; background: rgba(240,192,64,0.12); border: 1px solid rgba(240,192,64,0.3); border-radius: 20px; padding: 4px 14px; font-family: 'Jua', sans-serif; font-size: 15px; color: var(--accent); margin-bottom: 14px; }
+  .qr-hint { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 11px 14px; font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 14px; border: 1px solid rgba(255,255,255,0.06); }
   .qr-hint strong { color: var(--text); }
 
-  /* ── EMOJI PICKER ── */
-  .emoji-picker {
-    position: fixed;
-    background: var(--card2);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 12px;
-    padding: 12px;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 6px;
-    z-index: 999;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  }
-  .emoji-picker span {
-    font-size: 22px;
-    cursor: pointer;
-    border-radius: 6px;
-    padding: 4px;
-    text-align: center;
-    transition: background 0.15s;
-  }
+  .firebase-status { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); margin-bottom: 14px; justify-content: center; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+  .status-dot.ok { background: var(--green); box-shadow: 0 0 8px rgba(62,207,114,0.5); }
+  .status-dot.err { background: #e05580; }
+
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 500; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-box { background: var(--card2); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 26px 22px; width: 100%; max-width: 340px; box-shadow: 0 16px 48px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.25s; }
+  .modal-overlay.open .modal-box { transform: scale(1); }
+  .modal-title { font-family: 'Jua', sans-serif; font-size: 18px; color: var(--accent); margin-bottom: 6px; }
+  .modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+
+  .emoji-picker { position: fixed; background: var(--card2); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 12px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; z-index: 999; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .emoji-picker span { font-size: 22px; cursor: pointer; border-radius: 6px; padding: 4px; text-align: center; transition: background 0.15s; }
   .emoji-picker span:hover { background: rgba(255,255,255,0.1); }
 
-  .toast {
-    position: fixed;
-    bottom: 32px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--green);
-    color: #0a2018;
-    font-family: 'Jua', sans-serif;
-    font-size: 15px;
-    padding: 12px 24px;
-    border-radius: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    opacity: 0;
-    transition: opacity 0.3s, transform 0.3s;
-    pointer-events: none;
-    z-index: 1000;
-    white-space: nowrap;
-  }
+  .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--green); color: #0a2018; font-family: 'Jua', sans-serif; font-size: 15px; padding: 12px 24px; border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; z-index: 1000; white-space: nowrap; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .loading-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 200; transition: opacity 0.4s; }
+  .loading-screen.hidden { opacity: 0; pointer-events: none; }
+  .spinner { width: 40px; height: 40px; border: 3px solid rgba(240,192,64,0.15); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-family: 'Jua', sans-serif; color: var(--muted); font-size: 14px; }
 </style>
 </head>
 <body>
 
-<!-- ══ SCREEN: ADMIN SETUP ══ -->
-<div class="screen" id="s-admin">
-  <div class="screen-inner">
-    <div class="logo">⚙️ 관리자 설정</div>
-    <div class="subtitle">부스 목록과 비밀번호를 설정하세요</div>
-    <div class="card">
-      <div class="field-label">부스 목록</div>
-      <div class="admin-booth-list" id="adminBoothList"></div>
-      <button class="add-booth-btn" onclick="addBooth()">＋ 부스 추가</button>
-      <hr class="section-divider">
-      <div class="field-label" style="margin-bottom:8px">이벤트 이름 (선택)</div>
-      <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:16px">
-      <div class="field-label" style="margin-bottom:8px">관리자 비밀번호 변경 (선택)</div>
-      <input type="password" id="newAdminPw" placeholder="새 비밀번호 입력 (비우면 유지)" style="margin-bottom:0">
-      <button class="btn btn-primary" onclick="saveAdmin()">저장 완료</button>
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">연결 중...</div>
+</div>
 
+<!-- SCREEN: FIREBASE SETUP -->
+<div class="screen" id="s-setup">
+  <div class="screen-inner">
+    <div class="logo">🔥 Firebase 설정</div>
+    <div class="subtitle">처음 한 번만 설정하면 돼요</div>
+    <div class="card">
+      <div class="setup-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><a href="https://console.firebase.google.com" target="_blank">console.firebase.google.com</a> 접속 → <strong>프로젝트 추가</strong></div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">2</div>
+        <div class="step-text">프로젝트 생성 후 <strong>웹 앱 추가 (&lt;/&gt;)</strong> → 앱 닉네임 입력 → 등록</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">3</div>
+        <div class="step-text">좌측 <strong>빌드 → Realtime Database</strong> → 데이터베이스 만들기 → <strong>테스트 모드</strong>로 시작</div>
+      </div>
+      <div class="setup-step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          프로젝트 설정 (⚙️) → 내 앱 → <strong>firebaseConfig 복사</strong> → 아래 붙여넣기
+          <div class="code-hint">const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "myapp.firebaseapp.com",
+  databaseURL: "https://myapp-default-rtdb...",
+  projectId: "myapp",
+  ...
+};</div>
+        </div>
+      </div>
       <hr class="section-divider">
-      <div class="field-label" style="margin-bottom:6px">📎 공유 링크</div>
-      <div style="font-size:12px; color:var(--muted); margin-bottom:10px; line-height:1.5">
-        아래 링크를 복사해 다른 운영진과 공유하세요.<br>링크를 열면 설정이 자동으로 적용돼요.
-      </div>
-      <div style="display:flex; gap:8px; align-items:stretch">
-        <input type="text" id="shareUrlInput" readonly
-          style="flex:1; font-size:11px; color:var(--muted); padding:10px 12px; cursor:pointer; overflow:hidden; text-overflow:ellipsis; white-space:nowrap"
-          onclick="this.select()" placeholder="저장 후 생성됩니다">
-        <button onclick="copyShareUrl()"
-          style="background:rgba(240,192,64,0.15); border:1.5px solid rgba(240,192,64,0.35); border-radius:10px; color:var(--accent); font-family:'Jua',sans-serif; font-size:13px; padding:0 14px; cursor:pointer; white-space:nowrap; flex-shrink:0">
-          복사
-        </button>
-      </div>
+      <div class="field-label" style="margin-bottom:8px">firebaseConfig 붙여넣기</div>
+      <textarea id="firebaseConfigInput" placeholder='const firebaseConfig = {
+  apiKey: "AIza...",
+  authDomain: "...",
+  databaseURL: "https://...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};'></textarea>
+      <div class="error-msg" id="setupError"></div>
+      <button class="btn btn-primary" onclick="connectFirebase()">🔥 연결하기</button>
     </div>
-    <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 참여자 화면으로</button>
   </div>
 </div>
 
-<!-- ══ SCREEN: PARTICIPANT START ══ -->
-<div class="screen active" id="s-start">
+<!-- SCREEN: ADMIN -->
+<div class="screen" id="s-admin">
+  <div class="screen-inner">
+    <div class="logo">⚙️ 관리자</div>
+    <div class="firebase-status">
+      <div class="status-dot ok" id="adminDot"></div>
+      <span id="adminStatusText">Firebase 연결됨 · 실시간 동기화</span>
+    </div>
+    <div class="card">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('tab-booths',this)">부스 설정</button>
+        <button class="tab-btn" onclick="switchTab('tab-completed',this)">완료자 명단</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-booths">
+        <div class="field-label">부스 목록</div>
+        <div class="admin-booth-list" id="adminBoothList"></div>
+        <button class="add-booth-btn" onclick="addBooth()">＋ 부스 추가</button>
+        <hr class="section-divider">
+        <div class="field-label" style="margin-bottom:8px">이벤트 이름</div>
+        <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:14px">
+        <div class="field-label" style="margin-bottom:8px">관리자 비밀번호 변경 (선택)</div>
+        <input type="password" id="newAdminPw" placeholder="새 비밀번호 (비우면 유지)">
+        <button class="btn btn-primary" onclick="saveAdmin()">☁️ 저장 · 모든 기기에 반영</button>
+      </div>
+
+      <div class="tab-panel" id="tab-completed">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <div class="field-label" style="margin:0">완료자 명단</div>
+          <span id="completedCount" style="font-family:'Jua',sans-serif;font-size:13px;color:var(--green)">0명</span>
+        </div>
+        <div class="completed-list" id="completedList">
+          <div class="empty-state">아직 완료한 참여자가 없어요</div>
+        </div>
+        <button class="btn btn-danger" style="margin-top:10px;font-size:13px;padding:10px" onclick="clearCompleted()">🗑 명단 초기화</button>
+      </div>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 참여자 화면으로</button>
+    <button class="btn btn-ghost" style="margin-top:6px;font-size:12px;color:rgba(255,255,255,0.2)" onclick="resetFirebase()">Firebase 재설정</button>
+  </div>
+</div>
+
+<!-- SCREEN: START -->
+<div class="screen" id="s-start">
   <div class="screen-inner">
     <div class="logo" id="startLogo">🎪 스탬프 랠리</div>
-    <div class="subtitle" id="startSub">모든 부스를 돌아다니며 스탬프를 모아보세요!</div>
+    <div class="subtitle">모든 부스를 돌아다니며 스탬프를 모아보세요!</div>
     <div class="card">
       <div class="field-label">이름을 입력해주세요</div>
       <input type="text" id="participantName" placeholder="홍길동" maxlength="20"
@@ -553,7 +242,56 @@
   </div>
 </div>
 
-<!-- ══ MODAL: ADMIN PASSWORD ══ -->
+<!-- SCREEN: STAMP CARD -->
+<div class="screen" id="s-card">
+  <div class="screen-inner">
+    <div style="text-align:center;margin-bottom:14px">
+      <div class="name-badge" id="cardNameBadge">홍길동 님</div>
+      <div class="logo" style="font-size:24px;margin-bottom:2px">스탬프 카드</div>
+    </div>
+    <div class="card">
+      <div class="progress-row">
+        <div class="progress-track"><div class="progress-bar" id="stampProgress"></div></div>
+        <div class="progress-label" id="stampCount">0/0</div>
+      </div>
+      <div class="stamp-grid" id="stampGrid"></div>
+      <div class="qr-hint">📱 <strong>각 부스에서 운영진</strong>에게 스탬프를 받으세요</div>
+    </div>
+    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:14px">← 처음으로</button>
+  </div>
+</div>
+
+<!-- SCREEN: BOOTH STAMP -->
+<div class="screen" id="s-booth">
+  <div class="screen-inner">
+    <div class="card">
+      <div class="booth-badge" id="boothBadge">🎯</div>
+      <div class="booth-title" id="boothTitle">부스 이름</div>
+      <div class="booth-sub">운영진이 비밀번호를 입력해 스탬프를 찍어주세요</div>
+      <div class="field-label">비밀번호</div>
+      <input type="password" id="boothPwInput" placeholder="••••" maxlength="20"
+        onkeydown="if(event.key==='Enter') tryStamp()">
+      <div class="error-msg" id="boothError"></div>
+      <button class="btn btn-primary" onclick="tryStamp()">스탬프 찍기 ✦</button>
+      <button class="btn btn-ghost" onclick="backToCard()">← 카드로 돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: COMPLETE -->
+<div class="screen" id="s-complete">
+  <div class="screen-inner">
+    <div class="card" style="text-align:center;padding:36px 20px">
+      <div class="complete-badge">🏆</div>
+      <div class="complete-title">축하해요!</div>
+      <div class="complete-sub" id="completeSub">모든 스탬프를 모았어요 🎉</div>
+      <div id="completeStamps" style="margin:20px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px"></div>
+      <button class="btn btn-green" onclick="goStart()">처음으로 돌아가기</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADMIN LOGIN -->
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box">
     <div class="modal-title">⚙️ 관리자 로그인</div>
@@ -567,124 +305,217 @@
   </div>
 </div>
 
-<!-- ══ SCREEN: STAMP CARD ══ -->
-<div class="screen" id="s-card">
-  <div class="screen-inner">
-    <div style="text-align:center; margin-bottom:16px">
-      <div class="name-badge" id="cardNameBadge">홍길동</div>
-      <div class="logo" style="font-size:26px; margin-bottom:4px">스탬프 카드</div>
-    </div>
-    <div class="card">
-      <div class="progress-row">
-        <div class="progress-track"><div class="progress-bar" id="stampProgress"></div></div>
-        <div class="progress-label" id="stampCount">0/0</div>
-      </div>
-      <div class="stamp-grid" id="stampGrid" style="grid-template-columns: repeat(3,1fr)"></div>
-      <div class="qr-hint">
-        📱 <strong>부스에서 QR코드를 스캔</strong>하거나 운영진에게 스탬프를 받으세요
-      </div>
-    </div>
-    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:16px">← 처음으로</button>
-  </div>
-</div>
-
-<!-- ══ SCREEN: BOOTH STAMP ══ -->
-<div class="screen" id="s-booth">
-  <div class="screen-inner">
-    <div class="card">
-      <div class="booth-badge" id="boothBadge">🎯</div>
-      <div class="booth-title" id="boothTitle">부스 이름</div>
-      <div class="booth-sub" id="boothSub">운영진이 비밀번호를 입력해 스탬프를 찍어주세요</div>
-      <div class="field-label">비밀번호</div>
-      <input type="password" id="boothPwInput" placeholder="••••" maxlength="20"
-        onkeydown="if(event.key==='Enter') tryStamp()">
-      <div class="error-msg" id="boothError"></div>
-      <button class="btn btn-primary" onclick="tryStamp()">스탬프 찍기 ✦</button>
-      <button class="btn btn-ghost" onclick="backToCard()">← 카드로 돌아가기</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SCREEN: COMPLETE ══ -->
-<div class="screen" id="s-complete">
-  <div class="screen-inner">
-    <div class="card" style="text-align:center; padding:40px 24px">
-      <div class="complete-badge">🏆</div>
-      <div class="complete-title">축하해요!</div>
-      <div class="complete-sub" id="completeSub">모든 스탬프를 모았어요 🎉<br>운영진에게 완료 화면을 보여주세요.</div>
-      <div id="completeStamps" style="margin: 24px 0; display:flex; flex-wrap:wrap; justify-content:center; gap:10px"></div>
-      <button class="btn btn-green" onclick="goStart()">처음으로 돌아가기</button>
-    </div>
-  </div>
-</div>
-
-<!-- Emoji Picker -->
 <div class="emoji-picker" id="emojiPicker" style="display:none"></div>
 <div class="toast" id="toast"></div>
 
-<script>
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, get, onValue, push, remove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+/* ── CONSTANTS ── */
 const EMOJIS = ['🎯','🎪','🎨','🎭','🎬','🎤','🎸','🎺','🌟','🔥','⚡','🌈','🍕','🍦','🎂','🏆','🚀','💎','🌸','🦋','🐉','🦁','🐬','🦄','🎁','🎀','🎮','🕹️','⚽','🏀'];
-const COLOR_LIST = ['#f0c040','#e07b30','#3ecf72','#e05580','#7b6cf0','#40c0cf','#cf7b40','#cf40a0','#40cfb0','#c0e040'];
-const LS_PARTICIPANT = 'stamp_participant';
+const COLORS = ['#f0c040','#e07b30','#3ecf72','#e05580','#7b6cf0','#40c0cf','#cf7b40','#cf40a0','#40cfb0','#c0e040'];
+const LS_FB = 'stamp_fb_config';
 
-// ── localStorage 헬퍼 ──
-function lsSave(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch(e) {} }
-function lsLoad(key) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : null; } catch(e) { return null; } }
-
-// ── URL 설정 인코딩/디코딩 ──
-function encodeConfig(cfg) {
-  return btoa(unescape(encodeURIComponent(JSON.stringify(cfg))));
-}
-function decodeConfig(str) {
-  try { return JSON.parse(decodeURIComponent(escape(atob(str)))); } catch(e) { return null; }
-}
-
-// 현재 설정으로 공유 URL 생성
-function buildShareUrl() {
-  const cfg = { booths, eventName, adminPw };
-  const encoded = encodeConfig(cfg);
-  const base = location.href.split('?')[0].split('#')[0];
-  return `${base}?config=${encoded}`;
-}
-
-function updateShareUrlInput() {
-  const el = document.getElementById('shareUrlInput');
-  if (el) el.value = buildShareUrl();
-}
-
-function copyShareUrl() {
-  const url = buildShareUrl();
-  navigator.clipboard.writeText(url).then(() => {
-    showToast('📎 링크가 복사됐어요!');
-  }).catch(() => {
-    // fallback
-    const el = document.getElementById('shareUrlInput');
-    el.select();
-    document.execCommand('copy');
-    showToast('📎 링크가 복사됐어요!');
-  });
-}
-
-// ── STATE ──
-let booths = [
-  { name: '부스 1', pw: '1234', emoji: '🎯' },
-  { name: '부스 2', pw: '5678', emoji: '🎨' },
-  { name: '부스 3', pw: '0000', emoji: '🌟' },
-];
+/* ── STATE ── */
+let db = null;
+let booths = [{ name: '부스 1', pw: '1234', emoji: '🎯' }];
 let eventName = '스탬프 랠리';
+let adminPw = 'admin';
 let participant = '';
 let stamps = [];
 let currentBooth = null;
 let emojiTarget = null;
-let adminPw = 'admin';
 
-// ── SCREEN SWITCH ──
+/* ── UTILS ── */
+const lsSave = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+const lsLoad = (k) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch(e) { return null; } };
+const safeKey = (n) => n.replace(/[.#$\[\]\/]/g, '_');
+
+function showToast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isErr ? '#e05580' : 'var(--green)';
+  t.style.color = isErr ? '#fff' : '#0a2018';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2600);
+}
+window.showToast = showToast;
+
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  setTimeout(() => document.getElementById(id).classList.add('active'), 10);
+  setTimeout(() => document.getElementById(id)?.classList.add('active'), 10);
+}
+window.show = show;
+
+function setLoading(text, visible = true) {
+  const el = document.getElementById('loadingScreen');
+  const tx = document.getElementById('loadingText');
+  if (tx) tx.textContent = text;
+  el.classList.toggle('hidden', !visible);
 }
 
-// ── ADMIN ──
+/* ── FIREBASE CONNECT ── */
+function parseFirebaseConfig(raw) {
+  // Extract JSON object from the config text
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('설정 객체를 찾을 수 없어요');
+  let s = match[0];
+  // remove comments
+  s = s.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  // remove trailing commas
+  s = s.replace(/,(\s*[}\]])/g, '$1');
+  // quote unquoted keys
+  s = s.replace(/([{,]\s*)([a-zA-Z_]\w*)\s*:/g, '$1"$2":');
+  // quote unquoted string values (non-number, non-bool)
+  s = s.replace(/:\s*([^",\s\[\]{}\d][^,\s\]}\n]*)/g, (m, v) => {
+    const t = v.trim();
+    if (t === 'true' || t === 'false' || t === 'null') return ': ' + t;
+    return ': "' + t.replace(/"/g, '') + '"';
+  });
+  return JSON.parse(s);
+}
+
+async function connectFirebase(savedRaw) {
+  const raw = savedRaw || document.getElementById('firebaseConfigInput')?.value?.trim() || '';
+  const errEl = document.getElementById('setupError');
+  if (errEl) errEl.textContent = '';
+
+  if (!raw) {
+    if (errEl) errEl.textContent = 'firebaseConfig를 붙여넣어 주세요.';
+    return;
+  }
+
+  let config;
+  try { config = parseFirebaseConfig(raw); }
+  catch(e) {
+    if (errEl) errEl.textContent = '형식 오류: ' + e.message + '\n그대로 복사해서 붙여넣어 주세요.';
+    return;
+  }
+
+  if (!config.projectId) {
+    if (errEl) errEl.textContent = 'projectId가 없어요. 올바른 firebaseConfig인지 확인해주세요.';
+    return;
+  }
+
+  // databaseURL 자동 보정
+  if (!config.databaseURL) {
+    config.databaseURL = `https://${config.projectId}-default-rtdb.firebaseio.com`;
+  }
+
+  setLoading('Firebase 연결 중...');
+  try {
+    const app = initializeApp(config);
+    db = getDatabase(app);
+
+    // 연결 테스트
+    setLoading('데이터 불러오는 중...');
+    await loadConfig();
+
+    // 저장
+    lsSave(LS_FB, raw);
+
+    // 실시간 리스너
+    listenConfig();
+    listenCompleted();
+
+    setLoading('', false);
+    show('s-start');
+    showToast('🔥 Firebase 연결 성공!');
+  } catch(e) {
+    setLoading('', false);
+    console.error(e);
+    let msg = e.message || '연결 실패';
+    if (msg.includes('permission')) msg = '권한 오류: Realtime Database를 테스트 모드로 설정했는지 확인해주세요.';
+    if (msg.includes('databaseURL') || msg.includes('400')) msg = 'databaseURL이 잘못됐어요. Realtime Database를 생성했는지 확인해주세요.';
+    if (errEl) errEl.textContent = msg;
+    show('s-setup');
+  }
+}
+window.connectFirebase = connectFirebase;
+
+window.resetFirebase = function() {
+  if (!confirm('Firebase 설정을 초기화할까요?')) return;
+  try { localStorage.removeItem(LS_FB); } catch(e) {}
+  location.reload();
+};
+
+/* ── FIREBASE: CONFIG ── */
+async function loadConfig() {
+  const snap = await get(ref(db, 'config'));
+  if (snap.exists()) applyConfig(snap.val());
+}
+
+function applyConfig(d) {
+  if (d.booths?.length) booths = d.booths;
+  if (d.eventName) eventName = d.eventName;
+  if (d.adminPw) adminPw = d.adminPw;
+  document.getElementById('startLogo').textContent = '🎪 ' + eventName;
+}
+
+function listenConfig() {
+  onValue(ref(db, 'config'), snap => {
+    if (!snap.exists()) return;
+    applyConfig(snap.val());
+    if (document.getElementById('s-card').classList.contains('active')) renderCard();
+  });
+}
+
+async function saveConfigToFB() {
+  await set(ref(db, 'config'), { booths, eventName, adminPw });
+}
+
+/* ── FIREBASE: STAMPS ── */
+async function loadStamps(name) {
+  try {
+    const snap = await get(ref(db, `stamps/${safeKey(name)}`));
+    if (snap.exists()) return snap.val().stamps || [];
+  } catch(e) {}
+  return null;
+}
+
+async function saveStamps(name, arr) {
+  if (!db) return;
+  await set(ref(db, `stamps/${safeKey(name)}`), { name, stamps: arr, updatedAt: Date.now() });
+}
+
+/* ── FIREBASE: COMPLETED ── */
+async function addCompleted(name) {
+  if (!db) return;
+  await push(ref(db, 'completed'), { name, completedAt: Date.now(), boothCount: booths.length });
+}
+
+function listenCompleted() {
+  onValue(ref(db, 'completed'), snap => {
+    const list = document.getElementById('completedList');
+    const cnt = document.getElementById('completedCount');
+    if (!snap.exists()) {
+      list.innerHTML = '<div class="empty-state">아직 완료한 참여자가 없어요</div>';
+      if (cnt) cnt.textContent = '0명';
+      return;
+    }
+    const rows = [];
+    snap.forEach(c => rows.push({ key: c.key, ...c.val() }));
+    rows.sort((a, b) => b.completedAt - a.completedAt);
+    if (cnt) cnt.textContent = rows.length + '명';
+    list.innerHTML = rows.map(r => {
+      const d = new Date(r.completedAt);
+      const t = `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      return `<div class="completed-item">
+        <div><div class="c-name">${r.name}</div><div class="c-time">${t} · ${r.boothCount}개 부스</div></div>
+        <div class="c-badge">완료 ✓</div>
+      </div>`;
+    }).join('');
+  });
+}
+
+window.clearCompleted = async function() {
+  if (!confirm('완료자 명단을 전부 지울까요?')) return;
+  await remove(ref(db, 'completed'));
+  showToast('명단이 초기화됐어요');
+};
+
+/* ── ADMIN ── */
 function renderAdmin() {
   const list = document.getElementById('adminBoothList');
   list.innerHTML = '';
@@ -699,48 +530,43 @@ function renderAdmin() {
     `;
     list.appendChild(row);
   });
-  updateShareUrlInput();
 }
+window.renderAdmin = renderAdmin;
 
-function addBooth() {
+window.addBooth = () => {
   booths.push({ name: `부스 ${booths.length + 1}`, pw: '1234', emoji: EMOJIS[booths.length % EMOJIS.length] });
   renderAdmin();
-}
+};
+window.removeBooth = (i) => {
+  if (booths.length <= 1) return showToast('부스는 최소 1개 필요해요', true);
+  booths.splice(i, 1); renderAdmin();
+};
 
-function removeBooth(i) {
-  if (booths.length <= 1) return showToast('부스는 최소 1개 필요해요');
-  booths.splice(i, 1);
-  renderAdmin();
-}
-
-function saveAdmin() {
-  if (booths.some(b => !b.name.trim())) return showToast('부스 이름을 입력해주세요');
-  if (booths.some(b => !b.pw.trim())) return showToast('모든 부스의 비밀번호를 설정해주세요');
+window.saveAdmin = async () => {
+  if (booths.some(b => !b.name.trim())) return showToast('부스 이름을 입력해주세요', true);
+  if (booths.some(b => !b.pw.trim())) return showToast('모든 부스 비밀번호를 설정해주세요', true);
   eventName = document.getElementById('eventName').value.trim() || '스탬프 랠리';
   document.getElementById('startLogo').textContent = '🎪 ' + eventName;
-  const newPw = document.getElementById('newAdminPw').value.trim();
-  if (newPw) adminPw = newPw;
+  const np = document.getElementById('newAdminPw').value.trim();
+  if (np) adminPw = np;
   document.getElementById('newAdminPw').value = '';
-  updateShareUrlInput(); // 🔗 공유 링크 갱신
-  showToast('✅ 저장됐어요! 공유 링크를 복사하세요');
-}
+  setLoading('저장 중...');
+  await saveConfigToFB();
+  setLoading('', false);
+  showToast('☁️ 모든 기기에 즉시 반영됐어요!');
+};
 
-function openAdminModal() {
+window.openAdminModal = () => {
   document.getElementById('adminPwInput').value = '';
   document.getElementById('adminPwError').textContent = '';
   document.getElementById('adminModal').classList.add('open');
   setTimeout(() => document.getElementById('adminPwInput').focus(), 300);
-}
-
-function closeAdminModal() {
-  document.getElementById('adminModal').classList.remove('open');
-}
-
-function checkAdminPw() {
-  const input = document.getElementById('adminPwInput').value;
-  if (input === adminPw) {
-    closeAdminModal();
-    renderAdmin();
+};
+window.closeAdminModal = () => document.getElementById('adminModal').classList.remove('open');
+window.checkAdminPw = () => {
+  const v = document.getElementById('adminPwInput').value;
+  if (v === adminPw) {
+    closeAdminModal(); renderAdmin();
     document.getElementById('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
     show('s-admin');
   } else {
@@ -748,194 +574,151 @@ function checkAdminPw() {
     document.getElementById('adminPwInput').value = '';
     document.getElementById('adminPwInput').focus();
   }
-}
+};
 
-// ── EMOJI PICKER ──
-function openEmojiPicker(e, idx) {
+window.switchTab = (tabId, btn) => {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+};
+
+/* ── EMOJI PICKER ── */
+window.openEmojiPicker = (e, idx) => {
   emojiTarget = idx;
-  const picker = document.getElementById('emojiPicker');
-  picker.innerHTML = EMOJIS.map(em => `<span onclick="pickEmoji('${em}')">${em}</span>`).join('');
-  picker.style.display = 'grid';
-  const rect = e.target.getBoundingClientRect();
-  picker.style.top = (rect.bottom + 6) + 'px';
-  picker.style.left = Math.min(rect.left, window.innerWidth - 220) + 'px';
+  const pk = document.getElementById('emojiPicker');
+  pk.innerHTML = EMOJIS.map(em => `<span onclick="pickEmoji('${em}')">${em}</span>`).join('');
+  pk.style.display = 'grid';
+  const r = e.target.getBoundingClientRect();
+  pk.style.top = (r.bottom + 6) + 'px';
+  pk.style.left = Math.min(r.left, window.innerWidth - 220) + 'px';
   e.stopPropagation();
-}
-function pickEmoji(em) {
+};
+window.pickEmoji = (em) => {
   if (emojiTarget !== null) { booths[emojiTarget].emoji = em; renderAdmin(); }
   document.getElementById('emojiPicker').style.display = 'none';
   emojiTarget = null;
-}
-document.addEventListener('click', () => {
-  document.getElementById('emojiPicker').style.display = 'none';
-});
+};
+document.addEventListener('click', () => { document.getElementById('emojiPicker').style.display = 'none'; });
 
-// ── RALLY START ──
-function startRally() {
+/* ── RALLY ── */
+window.startRally = async () => {
   const name = document.getElementById('participantName').value.trim();
-  if (!name) { document.getElementById('participantName').focus(); return showToast('이름을 입력해주세요 😊'); }
-
-  const saved = lsLoad(LS_PARTICIPANT);
-  if (saved && saved.participant === name && saved.stamps && saved.stamps.length > 0) {
-    participant = name;
-    stamps = saved.stamps;
-    renderCard();
-    show('s-card');
-    showToast(`${name} 님, 이어서 진행해요! (${stamps.length}/${booths.length})`);
-  } else {
-    participant = name;
-    stamps = [];
-    lsSave(LS_PARTICIPANT, { participant, stamps });
-    renderCard();
-    show('s-card');
-  }
-
+  if (!name) { document.getElementById('participantName').focus(); return showToast('이름을 입력해주세요 😊', true); }
+  participant = name;
+  setLoading('스탬프 불러오는 중...');
+  const saved = await loadStamps(name);
+  setLoading('', false);
+  stamps = saved && saved.length > 0 ? saved : [];
+  renderCard();
+  show('s-card');
+  if (saved && saved.length > 0) showToast(`${name} 님, 이어서 진행해요! (${stamps.length}/${booths.length})`);
   if (window._pendingBooth !== undefined) {
-    const idx = window._pendingBooth;
-    delete window._pendingBooth;
+    const idx = window._pendingBooth; delete window._pendingBooth;
     setTimeout(() => openBooth(idx), 400);
   }
-}
+};
 
-function goStart() {
+window.goStart = () => {
   document.getElementById('participantName').value = '';
   show('s-start');
-}
+};
 
-// ── STAMP CARD ──
+/* ── STAMP CARD ── */
 function renderCard() {
   document.getElementById('cardNameBadge').textContent = participant + ' 님';
   const grid = document.getElementById('stampGrid');
   const cols = booths.length <= 4 ? 2 : booths.length <= 9 ? 3 : 4;
-  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  grid.style.gridTemplateColumns = `repeat(${cols},1fr)`;
   grid.innerHTML = '';
-
   booths.forEach((b, i) => {
     const earned = stamps.includes(i);
-    const color = COLOR_LIST[i % COLOR_LIST.length];
+    const c = COLORS[i % COLORS.length];
     const cell = document.createElement('div');
     cell.className = 'stamp-cell' + (earned ? ' earned' : '');
     cell.id = `cell-${i}`;
-    cell.style.borderColor = earned ? color + '50' : '';
+    cell.style.borderColor = earned ? c + '50' : '';
     cell.innerHTML = `
       <div class="stamp-cell-num">${i+1}</div>
-      <div class="stamp-icon" style="background:${color}22; color:${color}; border-color:${color}">${b.emoji}</div>
+      <div class="stamp-icon" style="background:${c}22;color:${c};border-color:${c}">${b.emoji}</div>
       ${!earned ? `<div class="stamp-cell-name">${b.name}</div>` : ''}
     `;
     cell.addEventListener('click', () => openBooth(i));
     grid.appendChild(cell);
   });
-
-  const total = booths.length, done = stamps.length;
+  const done = stamps.length, total = booths.length;
   document.getElementById('stampProgress').style.width = (done / total * 100) + '%';
   document.getElementById('stampCount').textContent = `${done}/${total}`;
 }
 
-// ── BOOTH STAMP ──
+/* ── BOOTH ── */
 function openBooth(i) {
   if (stamps.includes(i)) return showToast('이미 스탬프를 받았어요! ✓');
   currentBooth = i;
-  const b = booths[i];
-  const color = COLOR_LIST[i % COLOR_LIST.length];
+  const b = booths[i]; const c = COLORS[i % COLORS.length];
   const badge = document.getElementById('boothBadge');
-  badge.textContent = b.emoji;
-  badge.style.background = color + '22';
-  badge.style.borderColor = color + '60';
+  badge.textContent = b.emoji; badge.style.background = c + '22'; badge.style.borderColor = c + '60';
   document.getElementById('boothTitle').textContent = b.name;
-  document.getElementById('boothTitle').style.color = color;
+  document.getElementById('boothTitle').style.color = c;
   document.getElementById('boothPwInput').value = '';
   document.getElementById('boothError').textContent = '';
   show('s-booth');
   setTimeout(() => document.getElementById('boothPwInput').focus(), 400);
 }
 
-function tryStamp() {
+window.tryStamp = async () => {
   const input = document.getElementById('boothPwInput').value;
   const b = booths[currentBooth];
   if (input === b.pw) {
     stamps.push(currentBooth);
-    lsSave(LS_PARTICIPANT, { participant, stamps }); // 💾 저장
+    await saveStamps(participant, stamps);
     renderCard();
     const cell = document.getElementById(`cell-${currentBooth}`);
-    if (cell) {
-      setTimeout(() => cell.classList.add('just-stamped'), 100);
-      setTimeout(() => cell.classList.remove('just-stamped'), 700);
-    }
+    if (cell) { setTimeout(() => cell.classList.add('just-stamped'), 100); setTimeout(() => cell.classList.remove('just-stamped'), 700); }
     show('s-card');
     showToast(`${b.emoji} ${b.name} 스탬프 획득!`);
-    if (stamps.length === booths.length) setTimeout(() => showComplete(), 900);
+    if (stamps.length === booths.length) setTimeout(showComplete, 900);
   } else {
     document.getElementById('boothError').textContent = '비밀번호가 틀렸어요. 다시 확인해주세요.';
     document.getElementById('boothPwInput').value = '';
     document.getElementById('boothPwInput').focus();
     const card = document.querySelector('#s-booth .card');
-    card.style.animation = 'none';
-    void card.offsetWidth;
-    card.style.animation = 'shake 0.4s';
+    card.style.animation = 'none'; void card.offsetWidth; card.style.animation = 'shake 0.4s';
   }
-}
+};
 
-function backToCard() { currentBooth = null; show('s-card'); }
+window.backToCard = () => { currentBooth = null; show('s-card'); };
 
-// ── COMPLETE ──
-function showComplete() {
+/* ── COMPLETE ── */
+async function showComplete() {
   document.getElementById('completeSub').innerHTML =
     `<strong style="color:var(--accent)">${participant}</strong> 님, 모든 스탬프를 모았어요! 🎉<br>운영진에게 이 화면을 보여주세요.`;
-  const wrap = document.getElementById('completeStamps');
-  wrap.innerHTML = booths.map((b, i) => {
-    const c = COLOR_LIST[i % COLOR_LIST.length];
-    return `<div style="width:52px;height:52px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:24px">${b.emoji}</div>`;
+  document.getElementById('completeStamps').innerHTML = booths.map((b, i) => {
+    const c = COLORS[i % COLORS.length];
+    return `<div style="width:48px;height:48px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:22px">${b.emoji}</div>`;
   }).join('');
-  try { localStorage.removeItem(LS_PARTICIPANT); } catch(e) {}
+  await addCompleted(participant);
   show('s-complete');
 }
 
-// ── UTILS ──
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
+/* ── SHAKE ── */
+const ss = document.createElement('style');
+ss.textContent = `@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}`;
+document.head.appendChild(ss);
 
-const style = document.createElement('style');
-style.textContent = `@keyframes shake {
-  0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
-}`;
-document.head.appendChild(style);
+/* ── URL PARAM ── */
+const up = new URLSearchParams(location.search);
+const bp = up.get('booth');
+if (bp !== null) { const i = parseInt(bp) - 1; if (!isNaN(i)) window._pendingBooth = i; }
 
-// ── 초기화: URL ?config= 우선, 없으면 기본값 ──
-(function init() {
-  const params = new URLSearchParams(location.search);
-
-  // 1) 관리자 설정: URL config 파라미터에서 불러오기
-  const cfgParam = params.get('config');
-  if (cfgParam) {
-    const cfg = decodeConfig(cfgParam);
-    if (cfg) {
-      if (cfg.booths && cfg.booths.length) booths = cfg.booths;
-      if (cfg.eventName) eventName = cfg.eventName;
-      if (cfg.adminPw) adminPw = cfg.adminPw;
-    }
-  }
-
-  // 2) 이벤트명 화면 반영
-  document.getElementById('startLogo').textContent = '🎪 ' + eventName;
-  renderAdmin();
-
-  // 3) 부스 QR 파라미터 처리
-  const boothParam = params.get('booth');
-  if (boothParam !== null) {
-    const bIdx = parseInt(boothParam) - 1;
-    if (!isNaN(bIdx) && bIdx >= 0 && bIdx < booths.length) {
-      window._pendingBooth = bIdx;
-    }
-  }
-
-  // 4) 이전 참여자 이름 미리 채우기
-  const savedP = lsLoad(LS_PARTICIPANT);
-  if (savedP && savedP.participant) {
-    document.getElementById('participantName').value = savedP.participant;
+/* ── INIT ── */
+(async () => {
+  const saved = lsLoad(LS_FB);
+  if (saved) {
+    await connectFirebase(saved);
+  } else {
+    setLoading('', false);
+    show('s-setup');
   }
 })();
 </script>
