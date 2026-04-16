@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>스탬프 랠리</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎪</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -216,9 +217,36 @@ input:focus{border-color:var(--accent)}
           <div id="autoResetStatus" style="font-size:11px;color:var(--muted);margin-top:6px"></div>
         </div>
         <button class="btn btn-danger" onclick="resetAllStamps()">🔄 지금 즉시 스탬프 전체 초기화</button>
+        <hr class="section-divider">
+        <div class="field-label" style="margin-bottom:6px">이 기기 참여 기록</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5">특정 참여자가 다시 참여할 수 있도록 이 기기의 오늘 참여 기록만 삭제해요.</div>
+        <button class="btn btn-ghost" style="font-size:14px;padding:11px" onclick="clearDeviceRecord()">📱 이 기기 참여 기록 삭제</button>
       </div>
     </div>
     <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 참여자 화면으로</button>
+  </div>
+</div>
+
+<!-- SCREEN: ALREADY PARTICIPATED -->
+<div class="screen" id="s-already">
+  <div class="screen-inner">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:64px;margin-bottom:12px">🚫</div>
+      <div class="logo" style="font-size:24px;color:var(--red)">이미 참여하셨어요</div>
+    </div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:40px;margin-bottom:12px">📅</div>
+      <div id="alreadyName" style="font-family:'Jua',sans-serif;font-size:20px;color:var(--accent);margin-bottom:8px"></div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px">
+        오늘 이미 스탬프 랠리에 참여하셨어요.<br>
+        내일 자정이 지나면 다시 참여할 수 있어요.
+      </div>
+      <div id="alreadyTime" style="font-size:12px;color:rgba(255,255,255,.2);margin-bottom:20px"></div>
+      <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;border:1px solid rgba(255,255,255,.06)">
+        ⚠️ 본인이 참여한 것이 맞다면 운영진에게 문의해 주세요.
+      </div>
+    </div>
+    <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 돌아가기</button>
   </div>
 </div>
 
@@ -656,6 +684,37 @@ window.pickEmoji = em => {
 };
 document.addEventListener('click', () => { $('emojiPicker').style.display = 'none'; });
 
+/* ── DEVICE PARTICIPATION CHECK (localStorage) ── */
+const LS_DONE_KEY = 'stamp_done_today';
+
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function checkAlreadyDone() {
+  try {
+    const raw = localStorage.getItem(LS_DONE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (data.date !== todayStr()) { localStorage.removeItem(LS_DONE_KEY); return null; }
+    return data;
+  } catch(e) { return null; }
+}
+
+function markDone(name, school) {
+  try {
+    localStorage.setItem(LS_DONE_KEY, JSON.stringify({
+      date: todayStr(), name, school, completedAt: Date.now()
+    }));
+  } catch(e) {}
+}
+
+window.clearDeviceRecord = function() {
+  try { localStorage.removeItem(LS_DONE_KEY); } catch(e) {}
+  showToast('📱 이 기기 참여 기록이 삭제됐어요');
+};
+
 /* ── RALLY START ── */
 window.startRally = async () => {
   const name = $('inputName').value.trim();
@@ -664,6 +723,16 @@ window.startRally = async () => {
   if (!name) { $('inputName').focus(); return showToast('이름을 입력해주세요 😊', true); }
   if (!school) { $('inputSchool').focus(); return showToast('학교를 입력해주세요', true); }
   if (!grade) { $('inputGrade').focus(); return showToast('학년을 입력해주세요', true); }
+
+  // ── 중복 참여 체크 ──
+  const done = checkAlreadyDone();
+  if (done) {
+    $('alreadyName').textContent = done.name + ' 님';
+    const d = new Date(done.completedAt);
+    $('alreadyTime').textContent = `참여 시각: ${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    show('s-already');
+    return;
+  }
 
   participant = { name, school, grade };
 
@@ -783,6 +852,7 @@ async function showComplete() {
     return `<div style="width:46px;height:46px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:20px">${b.emoji}</div>`;
   }).join('');
   await addCompleted(participant, stamps);
+  markDone(participant.name, participant.school); // 📱 이 기기에 오늘 완료 기록
   show('s-complete');
 }
 
@@ -793,6 +863,7 @@ window.resetAllStamps = async function() {
   await remove(ref(db, 'stamps'));
   // 마지막 초기화 시각 기록
   await set(ref(db, 'meta/lastReset'), { at: Date.now(), by: 'manual' });
+  try { localStorage.removeItem(LS_DONE_KEY); } catch(e) {}
   setLoading('', false);
   showToast('🔄 스탬프가 초기화됐어요!');
 };
