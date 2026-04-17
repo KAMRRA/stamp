@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>스탬프 랠리</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎪</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -41,7 +40,6 @@ input:focus{border-color:var(--accent)}
 .btn:active{transform:scale(.97)}
 .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;box-shadow:0 4px 20px rgba(240,192,64,.3)}
 .btn-ghost{background:rgba(255,255,255,.06);color:var(--muted)}
-.btn-disabled{background:rgba(255,255,255,.04);color:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.08);cursor:not-allowed;opacity:.6}
 .btn-green{background:linear-gradient(135deg,var(--green),#2aaa58);color:#0a2018;box-shadow:0 4px 20px rgba(62,207,114,.3);margin-top:20px}
 .btn-danger{background:rgba(224,85,128,.1);color:var(--red);border:1px solid rgba(224,85,128,.25)}
 .btn-download{background:rgba(62,207,114,.1);color:var(--green);border:1px solid rgba(62,207,114,.25);font-size:13px;padding:10px;margin-top:8px}
@@ -49,10 +47,9 @@ input:focus{border-color:var(--accent)}
 .admin-btn:hover{background:rgba(240,192,64,.08);border-color:rgba(240,192,64,.3);color:var(--accent)}
 
 /* tabs */
-.tab-bar{display:flex;gap:4px;background:var(--card2);padding:6px;border-radius:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:14px;flex-shrink:0}
-.tab-bar::-webkit-scrollbar{display:none}
-.tab-btn{flex-shrink:0;padding:9px 14px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:'Jua',sans-serif;font-size:13px;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
-.tab-btn.active{background:var(--card);color:var(--accent)}
+.tab-bar{display:flex;gap:3px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:14px}
+.tab-btn{flex:1;padding:8px 4px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:'Jua',sans-serif;font-size:12px;cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
+.tab-btn.active{background:var(--card2);color:var(--accent)}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
@@ -84,10 +81,10 @@ input:focus{border-color:var(--accent)}
 .stamp-cell{aspect-ratio:1;border-radius:13px;border:2px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.03);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;transition:border-color .3s;overflow:hidden;cursor:pointer}
 .stamp-cell.earned{border-style:solid;border-color:transparent}
 .stamp-cell.required-cell::after{content:'★';position:absolute;top:4px;right:6px;font-size:10px;color:var(--accent);opacity:.8}
-.stamp-cell-num{font-family:'Jua',sans-serif;font-size:13px;color:rgba(255,255,255,.35);position:absolute;top:5px;left:8px}
-.stamp-cell-name{font-size:13px;color:rgba(255,255,255,.5);text-align:center;padding:0 6px;line-height:1.4;font-weight:700}
+.stamp-cell-num{font-family:'Jua',sans-serif;font-size:10px;color:rgba(255,255,255,.2);position:absolute;top:4px;left:7px}
+.stamp-cell-name{font-size:10px;color:rgba(255,255,255,.25);text-align:center;padding:0 4px;line-height:1.3}
 .stamp-cell.earned .stamp-cell-name{display:none}
-.stamp-icon{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;opacity:0;transform:scale(0) rotate(-30deg);position:relative}
+.stamp-icon{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;opacity:0;transform:scale(0) rotate(-30deg);position:relative}
 .stamp-cell.earned .stamp-icon{opacity:1;transform:scale(1) rotate(-8deg);transition:opacity .4s,transform .4s cubic-bezier(.175,.885,.32,1.4)}
 .stamp-cell.just-stamped .stamp-icon{animation:stampPop .5s cubic-bezier(.175,.885,.32,1.4) forwards}
 @keyframes stampPop{0%{transform:scale(2.2) rotate(-30deg);opacity:0}60%{transform:scale(.88) rotate(-6deg);opacity:1}80%{transform:scale(1.1) rotate(-10deg);opacity:1}100%{transform:scale(1) rotate(-8deg);opacity:1}}
@@ -128,42 +125,6 @@ input:focus{border-color:var(--accent)}
 .modal-title{font-family:'Jua',sans-serif;font-size:18px;color:var(--accent);margin-bottom:5px}
 .modal-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.5}
 
-/* coupon */
-.coupon-wrap{display:flex;flex-direction:column;gap:14px;margin:16px 0}
-.coupon{border-radius:16px;padding:0;overflow:hidden;position:relative;box-shadow:0 8px 32px rgba(0,0,0,.4)}
-.coupon-inner{background:linear-gradient(135deg,#1a2634,#1f3548);border:2px solid rgba(240,192,64,.3);border-radius:16px;padding:24px 20px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden}
-.coupon-inner::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(240,192,64,.06)}
-.coupon-left{flex-shrink:0;text-align:center}
-.coupon-emoji{font-size:40px;display:block;margin-bottom:4px}
-.coupon-num{font-family:'Jua',sans-serif;font-size:11px;color:var(--accent);letter-spacing:2px}
-.coupon-mid{flex:1}
-.coupon-title{font-family:'Jua',sans-serif;font-size:20px;color:var(--accent);margin-bottom:4px}
-.coupon-sub{font-size:12px;color:var(--muted);line-height:1.5}
-.coupon-badge{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#1a1400;font-family:'Jua',sans-serif;font-size:13px;padding:5px 14px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.coupon-deco{position:absolute;left:-1px;top:50%;transform:translateY(-50%);width:16px;height:32px;background:var(--bg);border-radius:0 16px 16px 0;border-right:2px solid rgba(240,192,64,.3)}
-.coupon-deco-r{position:absolute;right:-1px;top:50%;transform:translateY(-50%);width:16px;height:32px;background:var(--bg);border-radius:16px 0 0 16px;border-left:2px solid rgba(240,192,64,.3)}
-.stamp-summary{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}
-.stamp-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px}
-.result-stats{background:var(--bg);border-radius:10px;padding:14px 16px;margin:12px 0;display:flex;justify-content:space-around}
-.stat-item{text-align:center}
-.stat-num{font-family:'Jua',sans-serif;font-size:24px;color:var(--accent)}
-.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
-
-/* already screen code input */
-.unlock-box{background:var(--bg);border-radius:12px;padding:14px;margin-top:16px;border:1px solid rgba(255,255,255,.08)}
-.unlock-title{font-size:12px;color:var(--muted);margin-bottom:8px;text-align:center}
-
-/* admin layout - 탭 고정, 내용 스크롤 */
-#s-admin{align-items:stretch;padding:0;overflow:hidden}
-#s-admin .admin-wrap{display:flex;flex-direction:column;height:100%;width:100%;max-width:440px;margin:0 auto}
-#s-admin .admin-header{padding:16px 16px 8px;flex-shrink:0;background:var(--bg)}
-#s-admin .admin-tabbar{display:flex;gap:4px;padding:0 16px;flex-shrink:0;background:var(--bg);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-#s-admin .admin-tabbar::-webkit-scrollbar{display:none}
-#s-admin .admin-tab-btn{flex-shrink:0;padding:10px 16px;border:none;border-bottom:3px solid transparent;background:transparent;color:var(--muted);font-family:'Jua',sans-serif;font-size:14px;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap}
-#s-admin .admin-tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
-#s-admin .admin-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 24px}
-#s-admin .admin-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid rgba(255,255,255,.07);box-shadow:0 4px 20px rgba(0,0,0,.3)}
-
 /* misc */
 .emoji-picker{position:fixed;background:var(--card2);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(6,1fr);gap:6px;z-index:999;box-shadow:0 8px 32px rgba(0,0,0,.5)}
 .emoji-picker span{font-size:22px;cursor:pointer;border-radius:6px;padding:4px;text-align:center;transition:background .15s}
@@ -187,28 +148,18 @@ input:focus{border-color:var(--accent)}
 
 <!-- SCREEN: ADMIN -->
 <div class="screen" id="s-admin">
-  <div class="admin-wrap">
-    <!-- 고정 헤더 -->
-    <div class="admin-header">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-        <div style="font-family:'Jua',sans-serif;font-size:22px;color:var(--accent)">⚙️ 관리자</div>
-        <div class="firebase-status" style="margin:0">
-          <div class="status-dot ok"></div>
-          <span>실시간 동기화</span>
-        </div>
+  <div class="screen-inner">
+    <div class="logo">⚙️ 관리자</div>
+    <div class="firebase-status">
+      <div class="status-dot ok"></div>
+      <span>Firebase 실시간 동기화</span>
+    </div>
+    <div class="card">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('tab-booths',this)">부스 설정</button>
+        <button class="tab-btn" onclick="switchTab('tab-participants',this)">참가자</button>
+        <button class="tab-btn" onclick="switchTab('tab-completed',this)">완료자</button>
       </div>
-    </div>
-    <!-- 고정 탭바 -->
-    <div class="admin-tabbar">
-      <button class="admin-tab-btn active" onclick="switchAdminTab('tab-booths',this)">부스 설정</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tab-participants',this)">참가자</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tab-completed',this)">완료자</button>
-      <button class="admin-tab-btn" onclick="switchAdminTab('tab-reset',this)">초기화</button>
-    </div>
-    <div style="height:1px;background:rgba(255,255,255,.07);flex-shrink:0"></div>
-    <!-- 스크롤 영역 -->
-    <div class="admin-body">
-    <div class="admin-card">
 
       <!-- 부스 설정 탭 -->
       <div class="tab-panel active" id="tab-booths">
@@ -219,19 +170,7 @@ input:focus{border-color:var(--accent)}
         <div class="field-label" style="margin-bottom:8px">이벤트 이름</div>
         <input type="text" id="eventName" placeholder="예: 2025 봄 축제" style="margin-bottom:12px">
         <div class="field-label" style="margin-bottom:8px">관리자 비밀번호 변경 (선택)</div>
-        <input type="password" id="newAdminPw" placeholder="새 비밀번호 (비우면 유지)" style="margin-bottom:14px">
-        <hr class="section-divider" style="margin:8px 0 14px">
-        <div class="field-label" style="margin-bottom:6px">🎟 뽑기 기회 설정</div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5">뽑기 1회: 설정 개수 이상 참여 · 뽑기 2회: 전체 부스 완료</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <span style="font-size:13px;color:var(--muted);white-space:nowrap">뽑기 1회 기준</span>
-          <input type="text" id="drawMinInput" placeholder="예: 4" maxlength="3"
-            style="width:70px;text-align:center;font-family:'Jua',sans-serif;font-size:16px;flex-shrink:0">
-          <span style="font-size:13px;color:var(--muted)">개 이상</span>
-        </div>
-        <div class="field-label" style="margin-bottom:6px">해제 코드 (이미 참여 화면 해제용)</div>
-        <input type="text" id="drawCodeInput" placeholder="예: OPEN2025" maxlength="20"
-          style="font-family:'Jua',sans-serif;letter-spacing:2px;text-transform:uppercase">
+        <input type="password" id="newAdminPw" placeholder="새 비밀번호 (비우면 유지)">
         <button class="btn btn-primary" onclick="saveAdmin()">☁️ 저장 · 모든 기기에 반영</button>
       </div>
 
@@ -260,62 +199,8 @@ input:focus{border-color:var(--accent)}
         <button class="btn btn-download" onclick="downloadCompletedCSV()">⬇ 완료자 명단 CSV 다운로드</button>
         <button class="btn btn-danger" style="font-size:13px;padding:10px" onclick="clearCompleted()">🗑 완료자 명단 초기화</button>
       </div>
-
-      <!-- 초기화 탭 -->
-      <div class="tab-panel" id="tab-reset">
-        <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">
-          스탬프 데이터를 초기화하면 모든 참여자의 스탬프가 삭제돼요.<br>
-          <span style="color:var(--accent)">매일 자정 자동 초기화</span>가 설정된 경우 매일 새로 시작할 수 있어요.
-        </div>
-        <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px">
-          <div class="field-label" style="margin-bottom:8px">자동 초기화</div>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <span style="font-size:13px;color:var(--muted)">매일 자정(00:00) 자동 초기화</span>
-            <button id="autoResetToggle" onclick="toggleAutoReset()" style="font-family:'Jua',sans-serif;font-size:13px;padding:6px 16px;border-radius:20px;border:1.5px solid rgba(240,192,64,.4);background:rgba(240,192,64,.1);color:var(--accent);cursor:pointer">OFF</button>
-          </div>
-          <div id="autoResetStatus" style="font-size:11px;color:var(--muted);margin-top:6px"></div>
-        </div>
-        <button class="btn btn-danger" onclick="resetAllStamps()">🔄 지금 즉시 스탬프 전체 초기화</button>
-        <hr class="section-divider">
-        <div class="field-label" style="margin-bottom:6px">이 기기 참여 기록</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.5">특정 참여자가 다시 참여할 수 있도록 이 기기의 오늘 참여 기록만 삭제해요.</div>
-        <button class="btn btn-ghost" style="font-size:14px;padding:11px" onclick="clearDeviceRecord()">📱 이 기기 참여 기록 삭제</button>
-      </div>
     </div>
-    </div><!-- /admin-card -->
     <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 참여자 화면으로</button>
-    </div><!-- /admin-body -->
-  </div><!-- /admin-wrap -->
-</div>
-
-<!-- SCREEN: ALREADY PARTICIPATED -->
-<div class="screen" id="s-already">
-  <div class="screen-inner">
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="font-size:64px;margin-bottom:12px">🚫</div>
-      <div class="logo" style="font-size:24px;color:var(--red)">이미 참여하셨어요</div>
-    </div>
-    <div class="card" style="text-align:center">
-      <div style="font-size:40px;margin-bottom:12px">📅</div>
-      <div id="alreadyName" style="font-family:'Jua',sans-serif;font-size:20px;color:var(--accent);margin-bottom:8px"></div>
-      <div style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px">
-        오늘 이미 스탬프 랠리에 참여하셨어요.<br>
-        내일 자정이 지나면 다시 참여할 수 있어요.
-      </div>
-      <div id="alreadyTime" style="font-size:12px;color:rgba(255,255,255,.2);margin-bottom:20px"></div>
-      <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;border:1px solid rgba(255,255,255,.06)">
-        ⚠️ 본인이 참여한 것이 맞다면 운영진에게 문의해 주세요.
-      </div>
-      <div class="unlock-box">
-        <div class="unlock-title">🔓 운영진에게 해제 코드를 받아 입력하세요</div>
-        <input type="text" id="unlockCodeInput" placeholder="해제 코드 입력" maxlength="20"
-          style="text-align:center;letter-spacing:4px;font-family:'Jua',sans-serif"
-          onkeydown="if(event.key==='Enter') tryUnlockCode()">
-        <div class="error-msg" id="unlockError"></div>
-        <button class="btn btn-primary" style="font-size:15px;padding:12px;margin-top:8px" onclick="tryUnlockCode()">참여 기록 해제</button>
-      </div>
-    </div>
-    <button class="btn btn-ghost" style="margin-top:12px" onclick="show('s-start')">← 돌아가기</button>
   </div>
 </div>
 
@@ -359,9 +244,7 @@ input:focus{border-color:var(--accent)}
       <div class="stamp-grid" id="stampGrid"></div>
       <div class="qr-hint">📱 <strong>각 부스에서 운영진</strong>에게 스탬프를 받으세요<br><span style="color:var(--accent)">★ = 필수 부스</span></div>
     </div>
-    <button class="btn btn-primary" id="submitBtn" onclick="submitStamps()" style="margin-top:12px">📮 스탬프 제출하기</button>
-    <div id="submitHint" style="text-align:center;font-size:12px;color:var(--muted);margin-top:6px"></div>
-    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:8px">← 처음으로</button>
+    <button class="btn btn-ghost" onclick="goStart()" style="margin-top:12px">← 처음으로</button>
   </div>
 </div>
 
@@ -385,36 +268,16 @@ input:focus{border-color:var(--accent)}
   </div>
 </div>
 
-<!-- SCREEN: COMPLETE (쿠폰) -->
+<!-- SCREEN: COMPLETE -->
 <div class="screen" id="s-complete">
   <div class="screen-inner">
-    <div style="text-align:center;margin-bottom:16px">
-      <div class="complete-badge">🎉</div>
-      <div class="complete-title">참여 완료!</div>
-      <div class="complete-sub" id="completeSub"></div>
+    <div class="card" style="text-align:center;padding:32px 18px">
+      <div class="complete-badge">🏆</div>
+      <div class="complete-title">축하해요!</div>
+      <div class="complete-sub" id="completeSub">모든 스탬프를 모았어요 🎉</div>
+      <div id="completeStamps" style="margin:18px 0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px"></div>
+      <button class="btn btn-green" onclick="goStart()">처음으로 돌아가기</button>
     </div>
-    <div class="card">
-      <div class="result-stats">
-        <div class="stat-item">
-          <div class="stat-num" id="resultStampCount">0</div>
-          <div class="stat-label">참여 부스</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="resultTotal">0</div>
-          <div class="stat-label">전체 부스</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-num" id="resultCoupons" style="color:var(--green)">0</div>
-          <div class="stat-label">뽑기 기회</div>
-        </div>
-      </div>
-      <div class="stamp-summary" id="resultStamps"></div>
-      <hr style="border:none;border-top:1px solid rgba(255,255,255,.07);margin:8px 0 14px">
-      <div id="couponWrap" class="coupon-wrap"></div>
-      <div id="noCouponMsg" style="display:none;text-align:center;padding:16px;font-size:13px;color:var(--muted);line-height:1.6"></div>
-    </div>
-    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.6">운영진에게 이 화면을 보여주세요 📱</div>
-    <button class="btn btn-ghost" style="margin-top:10px" onclick="goStart()">처음으로 돌아가기</button>
   </div>
 </div>
 
@@ -461,8 +324,6 @@ let db = null;
 let booths = [{ name: '부스 1', pw: '1234', emoji: '🎯', required: false }];
 let eventName = '스탬프 랠리';
 let adminPw = 'admin';
-let drawMin = 4;   // 뽑기 1회 기준 최소 참여 부스 수
-let drawCode = ''; // 이미 참여 화면 해제 코드
 let participant = { name: '', school: '', grade: '' };
 let stamps = [];
 let currentBooth = null;
@@ -470,7 +331,6 @@ let emojiTarget = null;
 
 /* ── UTILS ── */
 const safeKey = n => n.replace(/[.#$\[\]\/\s]/g, '_');
-const participantKey = (name, school) => safeKey(name + '__' + school);
 const $ = id => document.getElementById(id);
 
 function showToast(msg, isErr = false) {
@@ -505,7 +365,6 @@ async function initFirebase() {
     listenConfig();
     listenParticipants();
     listenCompleted();
-    await checkAutoReset();
     setLoading('', false);
     show('s-start');
   } catch(e) {
@@ -525,10 +384,7 @@ function applyConfig(d) {
   if (d.booths?.length) booths = d.booths.map(b => ({ required: false, ...b }));
   if (d.eventName) eventName = d.eventName;
   if (d.adminPw) adminPw = d.adminPw;
-  if (d.drawMin !== undefined) drawMin = d.drawMin;
-  if (d.drawCode) drawCode = d.drawCode;
   $('startLogo').textContent = '🎪 ' + eventName;
-  updateDrawSettingsUI();
 }
 
 function listenConfig() {
@@ -551,17 +407,17 @@ async function saveConfigToFB() {
 }
 
 /* ── FIREBASE: STAMPS ── */
-async function loadStamps(name, school) {
+async function loadStamps(name) {
   try {
-    const snap = await get(ref(db, `stamps/${participantKey(name, school)}`));
+    const snap = await get(ref(db, `stamps/${safeKey(name)}`));
     if (snap.exists()) return snap.val().stamps || [];
   } catch(e) {}
   return null;
 }
 
-async function saveStamps(name, school, arr) {
+async function saveStamps(name, arr) {
   if (!db) return;
-  await set(ref(db, `stamps/${participantKey(name, school)}`), { name, school, stamps: arr, updatedAt: Date.now() });
+  await set(ref(db, `stamps/${safeKey(name)}`), { name, stamps: arr, updatedAt: Date.now() });
 }
 
 /* ── FIREBASE: PARTICIPANTS ── */
@@ -728,13 +584,9 @@ window.saveAdmin = async () => {
   const np = $('newAdminPw').value.trim();
   if (np) adminPw = np;
   $('newAdminPw').value = '';
-  const dm = parseInt($('drawMinInput')?.value);
-  if (!isNaN(dm) && dm > 0) drawMin = dm;
-  const dc = $('drawCodeInput')?.value.trim().toUpperCase();
-  if (dc) drawCode = dc;
 
   setLoading('저장 중...');
-  await set(ref(db, 'config'), { booths, eventName, adminPw, drawMin, drawCode });
+  await set(ref(db, 'config'), { booths, eventName, adminPw });
   setLoading('', false);
   showToast('☁️ 모든 기기에 즉시 반영됐어요!');
 };
@@ -751,7 +603,6 @@ window.checkAdminPw = () => {
   if (v === adminPw) {
     closeAdminModal(); renderAdmin();
     $('eventName').value = eventName === '스탬프 랠리' ? '' : eventName;
-    updateDrawSettingsUI();
     show('s-admin');
   } else {
     $('adminPwError').textContent = '비밀번호가 틀렸어요.';
@@ -766,21 +617,6 @@ window.switchTab = (tabId, btn) => {
   $(tabId).classList.add('active');
   btn.classList.add('active');
 };
-
-window.switchAdminTab = (tabId, btn) => {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-  $(tabId).classList.add('active');
-  btn.classList.add('active');
-  // 스크롤 맨 위로
-  const body = document.querySelector('#s-admin .admin-body');
-  if (body) body.scrollTop = 0;
-};
-
-function updateDrawSettingsUI() {
-  const mi = $('drawMinInput'); if (mi) mi.value = drawMin;
-  const dc = $('drawCodeInput'); if (dc) dc.value = drawCode;
-}
 
 /* ── EMOJI PICKER ── */
 window.openEmojiPicker = (e, idx) => {
@@ -800,37 +636,6 @@ window.pickEmoji = em => {
 };
 document.addEventListener('click', () => { $('emojiPicker').style.display = 'none'; });
 
-/* ── DEVICE PARTICIPATION CHECK (localStorage) ── */
-const LS_DONE_KEY = 'stamp_done_today';
-
-function todayStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-
-function checkAlreadyDone() {
-  try {
-    const raw = localStorage.getItem(LS_DONE_KEY);
-    if (!raw) return null;
-    const data = JSON.parse(raw);
-    if (data.date !== todayStr()) { localStorage.removeItem(LS_DONE_KEY); return null; }
-    return data;
-  } catch(e) { return null; }
-}
-
-function markDone(name, school) {
-  try {
-    localStorage.setItem(LS_DONE_KEY, JSON.stringify({
-      date: todayStr(), name, school, completedAt: Date.now()
-    }));
-  } catch(e) {}
-}
-
-window.clearDeviceRecord = function() {
-  try { localStorage.removeItem(LS_DONE_KEY); } catch(e) {}
-  showToast('📱 이 기기 참여 기록이 삭제됐어요');
-};
-
 /* ── RALLY START ── */
 window.startRally = async () => {
   const name = $('inputName').value.trim();
@@ -840,20 +645,10 @@ window.startRally = async () => {
   if (!school) { $('inputSchool').focus(); return showToast('학교를 입력해주세요', true); }
   if (!grade) { $('inputGrade').focus(); return showToast('학년을 입력해주세요', true); }
 
-  // ── 중복 참여 체크 ──
-  const done = checkAlreadyDone();
-  if (done) {
-    $('alreadyName').textContent = done.name + ' 님';
-    const d = new Date(done.completedAt);
-    $('alreadyTime').textContent = `참여 시각: ${d.getFullYear()}.${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    show('s-already');
-    return;
-  }
-
   participant = { name, school, grade };
 
   setLoading('스탬프 불러오는 중...');
-  const saved = await loadStamps(name, school);
+  const saved = await loadStamps(name);
   setLoading('', false);
 
   stamps = saved && saved.length > 0 ? saved : [];
@@ -907,35 +702,6 @@ function renderCard() {
   const done = stamps.length, total = booths.length;
   $('stampProgress').style.width = (done / total * 100) + '%';
   $('stampCount').textContent = `${done}/${total}`;
-  updateSubmitBtn(done, total);
-}
-
-function updateSubmitBtn(done, total) {
-  const btn = $('submitBtn');
-  const hint = $('submitHint');
-  if (!btn) return;
-  const requiredMissing = booths.some((b, i) => b.required && !stamps.includes(i));
-  const meetsDrawMin = done >= drawMin;
-  const canSubmit = !requiredMissing && meetsDrawMin;
-
-  if (canSubmit) {
-    btn.className = 'btn btn-primary';
-    btn.onclick = submitStamps;
-    if (done === total) {
-      hint.innerHTML = `🎟 <span style="color:var(--green)">뽑기 2회</span> 기회를 받을 수 있어요!`;
-    } else {
-      hint.innerHTML = `🎟 <span style="color:var(--accent)">뽑기 1회</span> 기회를 받을 수 있어요`;
-    }
-  } else {
-    btn.className = 'btn btn-disabled';
-    btn.onclick = null;
-    if (requiredMissing) {
-      const names = booths.filter((b,i) => b.required && !stamps.includes(i)).map(b=>b.name).join(', ');
-      hint.innerHTML = `★ 필수 부스를 완료해야 제출할 수 있어요<br><span style="color:var(--red)">${names}</span>`;
-    } else {
-      hint.innerHTML = `${done}/${drawMin}개 이상 참여해야 제출할 수 있어요`;
-    }
-  }
 }
 
 /* ── BOOTH ── */
@@ -960,7 +726,7 @@ window.tryStamp = async () => {
   const b = booths[currentBooth];
   if (input === b.pw) {
     stamps.push(currentBooth);
-    await saveStamps(participant.name, participant.school, stamps);
+    await saveStamps(participant.name, stamps);
     renderCard();
     const cell = $(`cell-${currentBooth}`);
     if (cell) {
@@ -969,6 +735,15 @@ window.tryStamp = async () => {
     }
     show('s-card');
     showToast(`${b.emoji} ${b.name} 스탬프 획득!`);
+
+    // 필수 부스 포함 완료 체크
+    const requiredAll = booths.every((b, i) => !b.required || stamps.includes(i));
+    const allDone = stamps.length === booths.length;
+    if (allDone || (requiredAll && booths.some(b => b.required) && stamps.length === booths.length)) {
+      setTimeout(showComplete, 900);
+    } else if (allDone) {
+      setTimeout(showComplete, 900);
+    }
   } else {
     $('boothError').textContent = '비밀번호가 틀렸어요. 다시 확인해주세요.';
     $('boothPwInput').value = '';
@@ -981,155 +756,14 @@ window.tryStamp = async () => {
 window.backToCard = () => { currentBooth = null; show('s-card'); };
 
 /* ── COMPLETE ── */
-/* ── SUBMIT & COUPON ── */
-window.submitStamps = async () => {
-  await showComplete();
-};
-
 async function showComplete() {
-  const done = stamps.length;
-  const total = booths.length;
-  const allDone = done === total;
-
-  // 쿠폰 수 계산
-  let coupons = 0;
-  if (allDone) coupons = 2;
-  else if (done >= drawMin) coupons = 1;
-
-  // 결과 통계
-  $('completeSub').innerHTML = `<strong style="color:var(--accent)">${participant.name}</strong> 님, 수고하셨어요! 🎉`;
-  $('resultStampCount').textContent = done;
-  $('resultTotal').textContent = total;
-  $('resultCoupons').textContent = coupons;
-
-  // 참여 부스 요약
-  $('resultStamps').innerHTML = booths.map((b, i) => {
-    const earned = stamps.includes(i);
+  $('completeSub').innerHTML = `<strong style="color:var(--accent)">${participant.name}</strong> 님, 모든 스탬프를 모았어요! 🎉<br>운영진에게 이 화면을 보여주세요.`;
+  $('completeStamps').innerHTML = booths.map((b, i) => {
     const c = COLORS[i % COLORS.length];
-    return `<div class="stamp-dot" style="background:${earned ? c+'33' : 'rgba(255,255,255,.05)'};border:2px solid ${earned ? c+'80' : 'rgba(255,255,255,.1)'}">
-      <span style="opacity:${earned ? 1 : 0.25}">${b.emoji}</span>
-    </div>`;
+    return `<div style="width:46px;height:46px;border-radius:50%;background:${c}22;border:2px solid ${c}60;display:flex;align-items:center;justify-content:center;font-size:20px">${b.emoji}</div>`;
   }).join('');
-
-  // 쿠폰 렌더
-  const wrap = $('couponWrap');
-  const noMsg = $('noCouponMsg');
-  if (coupons > 0) {
-    wrap.style.display = 'flex';
-    noMsg.style.display = 'none';
-    wrap.innerHTML = Array.from({ length: coupons }, (_, i) => `
-      <div class="coupon">
-        <div class="coupon-inner">
-          <div class="coupon-deco"></div>
-          <div class="coupon-deco-r"></div>
-          <div class="coupon-left">
-            <span class="coupon-emoji">🎟</span>
-            <div class="coupon-num">NO.${String(i+1).padStart(2,'0')}</div>
-          </div>
-          <div class="coupon-mid">
-            <div class="coupon-title">뽑기 쿠폰</div>
-            <div class="coupon-sub">${eventName}<br>${participant.name} · ${participant.school}</div>
-          </div>
-          <div class="coupon-badge">${i === 0 && coupons === 2 ? '보너스' : '1회'}</div>
-        </div>
-      </div>`).join('');
-  } else {
-    wrap.style.display = 'none';
-    noMsg.style.display = 'block';
-    noMsg.innerHTML = `<span style="font-size:32px">😢</span><br><br>
-      뽑기 기회를 받으려면<br>
-      <strong style="color:var(--accent)">${drawMin}개 이상</strong> 부스에 참여해야 해요.<br>
-      <span style="font-size:12px">(현재 ${done}개 참여)</span>`;
-  }
-
   await addCompleted(participant, stamps);
-  markDone(participant.name, participant.school);
   show('s-complete');
-}
-
-/* ── UNLOCK CODE ── */
-window.tryUnlockCode = function() {
-  const input = $('unlockCodeInput').value.trim().toUpperCase();
-  const errEl = $('unlockError');
-  if (!drawCode) {
-    errEl.textContent = '해제 코드가 설정되지 않았어요. 운영진에게 문의하세요.';
-    return;
-  }
-  if (input === drawCode) {
-    try { localStorage.removeItem(LS_DONE_KEY); } catch(e) {}
-    $('unlockCodeInput').value = '';
-    errEl.textContent = '';
-    showToast('✅ 참여 기록이 해제됐어요!');
-    show('s-start');
-  } else {
-    errEl.textContent = '코드가 틀렸어요. 운영진에게 다시 확인해주세요.';
-  }
-};
-
-/* ── RESET / AUTO-RESET ── */
-window.resetAllStamps = async function() {
-  if (!confirm('모든 참여자의 스탬프를 초기화할까요?\n이 작업은 되돌릴 수 없어요.')) return;
-  setLoading('스탬프 초기화 중...');
-  await remove(ref(db, 'stamps'));
-  // 마지막 초기화 시각 기록
-  await set(ref(db, 'meta/lastReset'), { at: Date.now(), by: 'manual' });
-  try { localStorage.removeItem(LS_DONE_KEY); } catch(e) {}
-  setLoading('', false);
-  showToast('🔄 스탬프가 초기화됐어요!');
-};
-
-window.toggleAutoReset = async function() {
-  const snap = await get(ref(db, 'meta/autoReset'));
-  const current = snap.exists() ? snap.val().enabled : false;
-  const next = !current;
-  await set(ref(db, 'meta/autoReset'), { enabled: next });
-  updateAutoResetUI(next);
-  showToast(next ? '⏰ 매일 자정 자동 초기화가 켜졌어요' : '자동 초기화가 꺼졌어요');
-};
-
-function updateAutoResetUI(enabled) {
-  const btn = document.getElementById('autoResetToggle');
-  const status = document.getElementById('autoResetStatus');
-  if (btn) {
-    btn.textContent = enabled ? 'ON' : 'OFF';
-    btn.style.background = enabled ? 'rgba(62,207,114,.15)' : 'rgba(240,192,64,.1)';
-    btn.style.borderColor = enabled ? 'rgba(62,207,114,.4)' : 'rgba(240,192,64,.4)';
-    btn.style.color = enabled ? 'var(--green)' : 'var(--accent)';
-  }
-  if (status) status.textContent = enabled ? '다음 초기화: 오늘 자정 00:00' : '현재 자동 초기화가 비활성화됐어요';
-}
-
-async function checkAutoReset() {
-  try {
-    const snap = await get(ref(db, 'meta/autoReset'));
-    const enabled = snap.exists() ? snap.val().enabled : false;
-    updateAutoResetUI(enabled);
-    if (!enabled) return;
-
-    const resetSnap = await get(ref(db, 'meta/lastReset'));
-    const lastReset = resetSnap.exists() ? resetSnap.val().at : 0;
-    const now = Date.now();
-    const todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
-
-    // 오늘 자정 이후 아직 초기화 안 됐으면 초기화
-    if (lastReset < todayMidnight.getTime()) {
-      await remove(ref(db, 'stamps'));
-      await set(ref(db, 'meta/lastReset'), { at: now, by: 'auto' });
-      console.log('자동 초기화 완료');
-    }
-
-    // 다음 자정까지 타이머 예약
-    const nextMidnight = new Date(); nextMidnight.setDate(nextMidnight.getDate() + 1); nextMidnight.setHours(0,0,0,0);
-    const msUntilMidnight = nextMidnight.getTime() - now;
-    setTimeout(async () => {
-      const arSnap = await get(ref(db, 'meta/autoReset'));
-      if (arSnap.exists() && arSnap.val().enabled) {
-        await remove(ref(db, 'stamps'));
-        await set(ref(db, 'meta/lastReset'), { at: Date.now(), by: 'auto' });
-        showToast('🔄 자정이 지나 스탬프가 초기화됐어요');
-      }
-    }, msUntilMidnight);
-  } catch(e) { console.error(e); }
 }
 
 /* ── ANIMATIONS ── */
